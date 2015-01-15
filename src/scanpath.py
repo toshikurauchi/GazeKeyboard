@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 from gaze_data import Fixation
-from keyboard import Keyboard
+from keyboard import PrintedKeyboard
 from util import load_or_detect_fixations
 
 class ScanpathPlotter(object):
@@ -15,7 +15,7 @@ class ScanpathPlotter(object):
 
     def plot(self):
         max_duration = np.max([f.duration for f in self.fixations])
-        kb_img = Keyboard().image()
+        kb_img = PrintedKeyboard().image()
         # Draw scanpat
         for i in range(len(self.fixations)-1):
             pos1 = tuple(np.int0(self.fixations[i].pos))

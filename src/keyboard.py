@@ -32,8 +32,6 @@ def sort_clockwise(points):
     return [left[0], right[0], right[1], left[1]]
 
 class Keyboard(object):
-    img = None
-
     def _init_homog(self):
         if len(self.corners) != 4:
             return
@@ -48,11 +46,6 @@ class Keyboard(object):
         pt = np.float32(point).reshape(-1, 1, 2)
         return cv2.perspectiveTransform(pt, self.H).ravel()
 
-    def image(self):
-        if Keyboard.img is None:
-            Keyboard.img = cv2.imread('Keyboard.png')
-        return Keyboard.img.copy()
-
     def weighted_keys(self, fixation):
         wk = []
         for key in self.keys:
@@ -64,6 +57,8 @@ class Keyboard(object):
         return [WeightedKey(k.key, 1/((k.weight+eps)*total)) for k in wk]
 
 class PrintedKeyboard(Keyboard):
+    img = None
+
     def __init__(self, corners=[]):
         self.corners = sort_clockwise(corners)
         self.real_corners = sort_clockwise(np.array([(110,450),(2440,450),(2440,1200),(110,1200)]))
@@ -99,3 +94,8 @@ class PrintedKeyboard(Keyboard):
                      Key('n', (260+2*rowdx+5*dx, 596+2*dy), 185, 185),
                      Key('m', (260+2*rowdx+6*dx, 596+2*dy), 185, 185)
                      ]
+
+    def image(self):
+        if PrintedKeyboard.img is None:
+            PrintedKeyboard.img = cv2.imread('Keyboard.png')
+        return PrintedKeyboard.img.copy()
