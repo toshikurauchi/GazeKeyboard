@@ -35,5 +35,3 @@ def trained_dict():
 
 if __name__=='__main__':
     dct = train()
-    for cand in dct.find_candidates([['a'],['a'],['c'],['r','n'],['o','i'],['n']]):
-        print cand.word, cand.freq

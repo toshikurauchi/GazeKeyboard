@@ -9,12 +9,12 @@ def load_char_sets(keys_path):
         cur_id = -1
         char_sets = []
         for row in spamreader:
-            new_id, char = int(row[0]), row[1]
+            new_id, char, weight = int(row[0]), row[1], float(row[2])
             if new_id == cur_id:
-                cur_char_set.append(char)
+                cur_char_set[char] = weight
             else:
                 cur_id = new_id
-                cur_char_set = [char]
+                cur_char_set = {char:weight}
                 char_sets.append(cur_char_set)
     return char_sets
 
@@ -23,9 +23,9 @@ def predict(dct, trial):
     char_sets = load_char_sets(keys_path)
     cands = dct.find_candidates(char_sets)
     cands = sorted(cands, key=lambda c: len(c.word), reverse=True)
-    cands = sorted(cands[:10], key=lambda c: c.freq, reverse=True)
+    cands = sorted(cands[:10], key=lambda c: c.dist, reverse=True)
     for cand in cands:
-        print cand.word, cand.freq
+        print cand.word, cand.freq, cand.dist
     return cands
 
 if __name__=='__main__':

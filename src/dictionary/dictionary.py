@@ -1,3 +1,5 @@
+import numpy as np
+
 class Trie(object):
     ''' Based on http://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python '''
     def __init__(self, words=[]):
@@ -33,42 +35,44 @@ class Trie(object):
 
 def fit_keys(keys, char_sets):
     i = 0
+    weights = []
     for k in keys:
-        while i < len(char_sets) and k not in char_sets[i]:
+        while i < len(char_sets) and k not in char_sets[i].keys():
             i += 1
-    return char_sets[i:]
+        if i < len(char_sets):
+            w = char_sets[i][k]
+            weights.append(w)
+            char_sets[i] = {k:w} # Only the chosen character can be repeated
+    return char_sets[i:], weights
 
 class Dictionary(Trie):
     def __init__(self, words=[]):
         super(Dictionary, self).__init__(words)
-        self.no_repeat_chars = ['q','w','y','h','x','v']
 
     def find_candidates(self, char_sets):
-        self.count = 0
-        cand = self._find_candidates_rec(self.root, '', '', char_sets)
-        print self.count
-        return cand
+        return self._find_candidates_rec(self.root, '', '', char_sets, [])
 
-    def _find_candidates_rec(self, cur_dict, prefix, checked_prefix, char_sets):
-        self.count += 1
+    def _find_candidates_rec(self, cur_dict, prefix, checked_prefix, char_sets, weights):
         cand = set()
         if len(char_sets) == 0:
             return cand
         if self._end in cur_dict.keys():
-            char_sets = fit_keys(prefix[len(checked_prefix):], char_sets)
+            char_sets, new_weights = fit_keys(prefix[len(checked_prefix):], char_sets)
+            weights = weights + new_weights
             if len(char_sets) == 0:
                 return cand
-            cand.add(WordCandidate(prefix, cur_dict[self._end][self._count]))
+            cand.add(WordCandidate(prefix, cur_dict[self._end][self._count], np.mean(weights)))
             checked_prefix = prefix
         for key in cur_dict.keys():
             if key not in self.flags:
-                cand.update(self._find_candidates_rec(cur_dict[key], prefix+key, checked_prefix, char_sets))
+                cand.update(self._find_candidates_rec(cur_dict[key], prefix+key, checked_prefix, char_sets, weights))
         return cand
 
 class WordCandidate(object):
-    def __init__(self, word, freq):
+    def __init__(self, word, freq, dist):
         self.word = word
         self.freq = freq
+        self.dist = dist
 
     def __eq__(self, other):
         return self.word.__eq__(other.word)
