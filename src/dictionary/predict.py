@@ -23,9 +23,7 @@ def load_char_sets(keys_path):
     return char_sets
 
 def prob(cand, total_freq, fix_count):
-    return LANGUAGE_WEIGHT * cand.freq/float(total_freq) \
-         + DISTANCE_WEIGHT * cand.dist \
-         + LENGTH_WEIGHT   * cand.unique_fix/float(fix_count)
+    return LANGUAGE_WEIGHT * cand.freq/float(total_freq)
 
 def predict(dct, trial):
     keys_path = os.path.join(trial, 'keys.csv')
@@ -35,7 +33,7 @@ def predict(dct, trial):
     total_freq = sum([c.freq for c in cands])
     cands = sorted(cands, key=lambda c: prob(c, total_freq, fix_count), reverse=True)
     for cand in cands[:10]:
-        print cand.word, cand.freq, cand.dist
+        print cand.word, cand.freq
     return cands
 
 if __name__=='__main__':
@@ -57,6 +55,8 @@ if __name__=='__main__':
             trials = [t for t in trials if os.path.isdir(t)]
             for trial in trials:
                 print 'Predictions for {f}'.format(f=trial)
-                predict(dct, trial)
+                cands = predict(dct, trial)
+                found = len([c for c in cands if c.word in correct]) > 0
+                print 'Found!' if found else 'Not found :('
                 print
 
