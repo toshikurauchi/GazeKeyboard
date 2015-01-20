@@ -1,45 +1,36 @@
 # Source: http://en.wikipedia.org/wiki/Levenshtein_distance
 
-def levenshtein(word, fixations):
-    # degenerate cases
-    if len(word) == 0: return 0
-    if len(fixations) == 0: return len(word)
+def levenshtein(word, fixations, last_dist=0, used_word='', v0=None):
+    if v0 is None:
+        v0 = [0]*(len(fixations)+1)
+    if len(word) == 0:
+        used = [i for i in range(len(fixations)) if v0[i+1] < v0[i]] # list of fixations used in this matching
+        return v0[len(fixations)], used_word, used
 
     # create two work vectors of integer distances
     # initialize v0 (the previous row of distances)
     # this row is A[0][i]: edit distance for an empty word
     # the distance is always zero as the deletion of a fixation has cost 0
     # (IMPORTANT: this is different from the lenveshtein distance!)
-    v0 = [0]*(len(fixations)+1)
     v1 = [0]*(len(fixations)+1)
-    last_dist = 0
-    used_word = ''
 
-    for i in range(len(word)):
-        # calculate v1 (current row distances) from the previous row v0
+    # calculate v1 (current row distances) from the previous row v0
+    # first element of v1 is A[i+1][0]
+    #   edit distance is delete (i+1) chars in word to match empty fixation list
+    #   cost of deleting char in word is 1
+    v1[0] = v0[0] + 1
 
-        # first element of v1 is A[i+1][0]
-        #   edit distance is delete (i+1) chars in word to match empty fixation list
-        #   cost of deleting char in word is 1
-        v1[0] = v0[0] + 1
+    # use formula to fill in the rest of the row
+    for i in range(len(fixations)):
+        cost = 0 if word[0] in fixations[i] else 1
+        # IMPORTANT: the following line is different from the levenshtein
+        # distance. We don't penalize deletions from fixations list.
+        v1[i + 1] = min([v1[i], v0[i + 1] + 1, v0[i] + cost])
 
-        # use formula to fill in the rest of the row
-        for j in range(len(fixations)):
-            cost = 0 if word[i] in fixations[j] else 1
-            # IMPORTANT: the following line is different from the levenshtein
-            # distance. We don't penalize deletions from fixations list.
-            v1[j + 1] = min([v1[j], v0[j + 1] + 1, v0[j] + cost])
-
-        if last_dist == v1[-1]:
-            used_word += word[i]
-        last_dist = v1[-1]
-
-        # copy v1 (current row) to v0 (previous row) for next iteration
-        for j in range(len(fixations) + 1):
-            v0[j] = v1[j]
-
-    used = [i for i in range(len(fixations)) if v1[i+1] < v1[i]] # list of fixations used in this matching
-    return v1[len(fixations)], used_word, used
+    if last_dist == v1[-1]:
+        used_word += word[0]
+    last_dist = v1[-1]
+    return levenshtein(word[1:], fixations, last_dist, used_word, v1)
 
 if __name__=='__main__':
     import os
