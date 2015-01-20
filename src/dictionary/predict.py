@@ -49,7 +49,7 @@ if __name__=='__main__':
         vid = '../../videos'
         sbjs = [os.path.join(vid,s) for s in os.listdir(vid)]
         sbjs = [s for s in sbjs if os.path.isdir(s)]
-        correct = ['computer', 'minimization', 'successfully']
+        correct = ['computer', 'minimization', 'successfully', 'cognizant']
         for sbj in sbjs:
             trials = [os.path.join(sbj,t) for t in os.listdir(sbj)]
             trials = [t for t in trials if os.path.isdir(t)]

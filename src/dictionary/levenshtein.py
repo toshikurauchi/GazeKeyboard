@@ -44,6 +44,24 @@ def levenshtein(word, fixations):
     return v1[len(word)], used_word, used
 
 if __name__=='__main__':
-    print levenshtein('house', [['a','c','x'],['s','h'],['w','o','e','r'],['u','f','d'],['e','s'],['x','q']]) # 1
-    print levenshtein('house', [['a','c','x'],['s','h'],['w','o','e','r','u'],['f','d'],['e','s']]) # 2
-    print levenshtein('house', [['a','c','x'],['z','w'],['w','a','d','r','q'],['f','d'],['v','d']]) # 5
+    import os
+    from predict import load_char_sets
+
+
+    vid = '../../videos'
+    sbjs = [os.path.join(vid,s) for s in os.listdir(vid)]
+    sbjs = [s for s in sbjs if os.path.isdir(s)]
+    correct = ['computer', 'minimization', 'successfully', 'cognizant']
+    for sbj in sbjs:
+        trials = [os.path.join(sbj,t) for t in os.listdir(sbj)]
+        trials = [t for t in trials if os.path.isdir(t)]
+        for trial in trials:
+            print 'Levenshtein distances for {f}'.format(f=trial)
+            keys_path = os.path.join(trial, 'keys.csv')
+            char_sets = load_char_sets(keys_path)
+            for word in correct:
+                print levenshtein(word, char_sets)
+            print
+    #print levenshtein('house', [['a','c','x'],['s','h'],['w','o','e','r'],['u','f','d'],['e','s'],['x','q']]) # 1
+    #print levenshtein('house', [['a','c','x'],['s','h'],['w','o','e','r','u'],['f','d'],['e','s']]) # 2
+    #print levenshtein('house', [['a','c','x'],['z','w'],['w','a','d','r','q'],['f','d'],['v','d']]) # 5

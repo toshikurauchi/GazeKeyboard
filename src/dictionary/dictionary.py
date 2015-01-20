@@ -35,31 +35,23 @@ class Trie(object):
             else:
                 return False
 
-def remove_duplications(word):
-    if len(word) == 0:
-        return word
-    new_w = word[0]
-    for i in range(len(word)-1):
-        if word[i] != word[i+1]:
-            new_w += word[i+1]
-    return new_w
-
 class Dictionary(Trie):
     def __init__(self, words=[]):
         super(Dictionary, self).__init__(words)
 
     def find_candidates(self, char_sets):
-        return self._find_candidates_rec(self.root, '', '', char_sets, 0)
+        return self._find_candidates_rec(self.root, '', '', '', char_sets, 0)
 
-    def _find_candidates_rec(self, cur_dict, checked_prefix, prefix, char_sets, cur_dist):
+    def _find_candidates_rec(self, cur_dict, checked_prefix, prefix, simp_prefix, char_sets, cur_dist):
         cand = set()
-        if self._end in cur_dict.keys():
-            dist, _, idx = levenshtein(remove_duplications(prefix), char_sets)
+        if self._end in cur_dict.keys(): # Is a word (checked_prefix + prefix)
+            dist, _, idx = levenshtein(simp_prefix, char_sets)
             cur_dist += dist
             word = checked_prefix+prefix
             if dist < 4:
                 checked_prefix = word
                 prefix = ''
+                simp_prefix = ''
                 cand.add(WordCandidate(checked_prefix, cur_dict[self._end][self._count]))
                 if len(idx) == 0:
                     return cand
@@ -68,7 +60,10 @@ class Dictionary(Trie):
                 return cand
         for key in cur_dict.keys():
             if key not in self.flags:
-                cand.update(self._find_candidates_rec(cur_dict[key], checked_prefix, prefix+key, char_sets, cur_dist))
+                if len(simp_prefix) == 0 or simp_prefix[-1] != key:
+                    cand.update(self._find_candidates_rec(cur_dict[key], checked_prefix, prefix+key, simp_prefix+key, char_sets, cur_dist))
+                else:
+                    cand.update(self._find_candidates_rec(cur_dict[key], checked_prefix, prefix+key, simp_prefix, char_sets, cur_dist))
         return cand
 
 class WordCandidate(object):
