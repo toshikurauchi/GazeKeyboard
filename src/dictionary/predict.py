@@ -3,8 +3,7 @@ import os
 
 from train_dictionary import trained_dict
 
-DISTANCE_WEIGHT = 0.2
-LENGTH_WEIGHT = 0.5
+LENGTH_WEIGHT = 0.7
 LANGUAGE_WEIGHT = 0.3
 
 def load_char_sets(keys_path):
@@ -13,27 +12,28 @@ def load_char_sets(keys_path):
         cur_id = -1
         char_sets = []
         for row in spamreader:
-            new_id, char, weight = int(row[0]), row[1], float(row[2])
+            new_id, char, weight, time = int(row[0]), row[1], float(row[2]), float(row[3])
             if new_id == cur_id:
-                cur_char_set[char] = weight
+                cur_char_set[char] = {'w':weight,'t':time}
             else:
                 cur_id = new_id
-                cur_char_set = {char:weight}
+                cur_char_set = {char:{'w':weight,'t':time}}
                 char_sets.append(cur_char_set)
     return char_sets
 
-def prob(cand, total_freq, fix_count):
-    return LANGUAGE_WEIGHT * cand.freq/float(total_freq)
+def prob(cand, max_freq, fix_count):
+    return LANGUAGE_WEIGHT * cand.freq/float(max_freq) \
+         + LENGTH_WEIGHT * cand.size_w
 
 def predict(dct, trial):
     keys_path = os.path.join(trial, 'keys.csv')
     char_sets = load_char_sets(keys_path)
     fix_count = len(char_sets)
     cands = dct.find_candidates(char_sets)
-    total_freq = sum([c.freq for c in cands])
-    cands = sorted(cands, key=lambda c: prob(c, total_freq, fix_count), reverse=True)
+    max_freq = max([c.freq for c in cands])
+    cands = sorted(cands, key=lambda c: prob(c, max_freq, fix_count), reverse=True)
     for cand in cands[:10]:
-        print cand.word, cand.freq
+        print cand.word, cand.freq/float(max_freq), cand.size_w
     return cands
 
 if __name__=='__main__':
@@ -56,7 +56,9 @@ if __name__=='__main__':
             for trial in trials:
                 print 'Predictions for {f}'.format(f=trial)
                 cands = predict(dct, trial)
-                found = len([c for c in cands if c.word in correct]) > 0
-                print 'Found!' if found else 'Not found :('
+                found = [c for c in cands if c.word in correct]
+                print 'Found!' if len(found)>0 else 'Not found :('
+                for f in found:
+                    print f.word, f.freq, f.size_w
                 print
 

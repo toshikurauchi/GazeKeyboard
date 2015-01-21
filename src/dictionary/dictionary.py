@@ -7,6 +7,7 @@ class Trie(object):
     def __init__(self, words=[]):
         self._count = '_count_'
         self._end = '_end_'
+        self.max_length = 0
         self.flags = [self._count, self._end]
         self.root = {self._count:0}
         for word in words:
@@ -14,6 +15,9 @@ class Trie(object):
 
     def add(self, word, count=1):
         word = word.lower().strip()
+        length = len(word)
+        if length > self.max_length:
+            self.max_length = length
         cur_dict = self.root
         cur_dict[self._count] += count
         for letter in word:
@@ -40,36 +44,29 @@ class Dictionary(Trie):
         super(Dictionary, self).__init__(words)
 
     def find_candidates(self, char_sets):
-        return self._find_candidates_rec(self.root, '', '', '', char_sets, 0)
+        self.v = [[0]*(len(char_sets)+1) for i in range(self.max_length + 1)]
+        self.cur_dur = sum([c[c.keys()[0]]['t'] for c in char_sets])
+        return self._find_candidates_rec(0, self.root, '', '', char_sets)
 
-    def _find_candidates_rec(self, cur_dict, checked_prefix, prefix, simp_prefix, char_sets, cur_dist):
+    def _find_candidates_rec(self, depth, cur_dict, checked_prefix, prefix, char_sets, last_dist=0, used_word=''):
         cand = set()
-        if self._end in cur_dict.keys(): # Is a word (checked_prefix + prefix)
-            dist, _, idx = levenshtein(simp_prefix, char_sets)
-            cur_dist += dist
-            word = checked_prefix+prefix
-            if dist < 4:
-                checked_prefix = word
-                prefix = ''
-                simp_prefix = ''
-                cand.add(WordCandidate(checked_prefix, cur_dict[self._end][self._count]))
-                if len(idx) == 0:
-                    return cand
-                char_sets = char_sets[idx[-1]:]
-            else:
-                return cand
+        dist, last_dist = levenshtein(prefix, char_sets, last_dist, self.v[depth], self.v[depth+1])
+        checked_prefix += prefix
+        prefix = ''
+        if dist > 2:
+            return cand
+        if self._end in cur_dict.keys(): # Is a word
+            cand.add(WordCandidate(checked_prefix, cur_dict[self._end][self._count], (len(checked_prefix)-dist)/float(len(char_sets))))
         for key in cur_dict.keys():
             if key not in self.flags:
-                if len(simp_prefix) == 0 or simp_prefix[-1] != key:
-                    cand.update(self._find_candidates_rec(cur_dict[key], checked_prefix, prefix+key, simp_prefix+key, char_sets, cur_dist))
-                else:
-                    cand.update(self._find_candidates_rec(cur_dict[key], checked_prefix, prefix+key, simp_prefix, char_sets, cur_dist))
+                cand.update(self._find_candidates_rec(depth+1, cur_dict[key], checked_prefix, prefix+key, char_sets, last_dist, used_word))
         return cand
 
 class WordCandidate(object):
-    def __init__(self, word, freq):
+    def __init__(self, word, freq, size_w):
         self.word = word
         self.freq = freq
+        self.size_w = size_w
 
     def __eq__(self, other):
         return self.word.__eq__(other.word)
