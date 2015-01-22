@@ -3,8 +3,9 @@ import os
 
 from train_dictionary import trained_dict
 
-LENGTH_WEIGHT = 0.7
-LANGUAGE_WEIGHT = 0.3
+LENGTH_WEIGHT   = 0.2
+LANGUAGE_WEIGHT = 0.5
+TIME_WEIGHT     = 0.3
 
 def load_char_sets(keys_path):
     with open(keys_path, 'rb') as csvfile:
@@ -23,7 +24,8 @@ def load_char_sets(keys_path):
 
 def prob(cand, max_freq, fix_count):
     return LANGUAGE_WEIGHT * cand.freq/float(max_freq) \
-         + LENGTH_WEIGHT * cand.size_w
+         + LENGTH_WEIGHT * cand.size_w \
+         + TIME_WEIGHT * cand.weighted_time
 
 def predict(dct, trial):
     keys_path = os.path.join(trial, 'keys.csv')
