@@ -4,9 +4,10 @@ from numpy.linalg import norm
 import cv2
 
 class Key(object):
-    def __init__(self, key, center, width, height):
+    def __init__(self, key, top_left, width, height):
         self.key = key
-        self.center = np.array(center).ravel()
+        self.top_left = np.array(top_left).ravel()
+        self.center = self.top_left + [width/2, height/2]
         self.width = width
         self.height = height
         self.rad = math.sqrt(width**2 + height**2)/2
@@ -107,6 +108,12 @@ class PrintedKeyboard(Keyboard):
         PrintedKeyboard.img = cv2.imread('Keyboard.png')
         h,w = PrintedKeyboard.img.shape[:2]
         self.size_pix = (w,h)
+
+    def key_center(self, key):
+        for k in self.keys:
+            if k.key == key:
+                return k.center
+        return None
 
     def image(self):
         if PrintedKeyboard.img is None:
