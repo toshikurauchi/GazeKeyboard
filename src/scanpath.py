@@ -6,16 +6,19 @@ from keyboard import PrintedKeyboard
 from util import load_or_detect_fixations
 
 class ScanpathPlotter(object):
-    def __init__(self, folder):
+    def __init__(self, folder, redetect=0):
         self.max_fix_rad = 50
         self.fix_color   = (0, 0, 255)
         self.sac_color   = (0, 255, 0)
 
-        self.fixations = load_or_detect_fixations(folder)
+        self.fixations = load_or_detect_fixations(folder, redetect)
 
     def plot(self):
+        keyboard = PrintedKeyboard()
+        for f in self.fixations:
+            f.pos = keyboard.inch2pix(f.pos)
         max_duration = np.max([f.duration for f in self.fixations])
-        kb_img = PrintedKeyboard().image()
+        kb_img = keyboard.image()
         # Draw scanpat
         for i in range(len(self.fixations)-1):
             pos1 = tuple(np.int0(self.fixations[i].pos))
@@ -36,9 +39,12 @@ class ScanpathPlotter(object):
 if __name__=='__main__':
     import sys
 
+    redetect = 0
     if len(sys.argv) < 2:
         print "USAGE: {p} TRIAL_FOLDER".format(p=sys.argv[0])
         sys.exit()
+    if len(sys.argv) > 2:
+        redetect = int(sys.argv[2])
 
     folder = sys.argv[1]
-    ScanpathPlotter(folder).plot()
+    ScanpathPlotter(folder, redetect).plot()

@@ -50,10 +50,10 @@ def correlate_gaze(gaze_list,timestamps, frame_size):
 
 from video_processor import VideoProcessor
 
-def load_or_detect_fixations(folder):
+def load_or_detect_fixations(folder, redetect=0):
     fixations_path = os.path.join(folder, 'keyboard_fixations.npy')
     if not os.path.isfile(fixations_path):
-        VideoProcessor(folder).process()
+        VideoProcessor(folder, redetect).process()
     v = np.load(fixations_path)
     return [Fixation.from_values(v[i]) for i in range(v.shape[0])]
 

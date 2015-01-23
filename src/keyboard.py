@@ -61,41 +61,54 @@ class PrintedKeyboard(Keyboard):
 
     def __init__(self, corners=[]):
         self.corners = sort_clockwise(corners)
-        self.real_corners = sort_clockwise(np.array([(110,450),(2440,450),(2440,1200),(110,1200)]))
+        self.real_corners = sort_clockwise(np.array([(6,24),(130,24),(130,64),(6,64)]))
         self._init_homog()
-        dx = 224
-        dy = 224
-        rowdx = 112
+        self.size_inch = (136,88)
+        self.size_pix = None
+        dx = 12
+        dy = 12
+        rowdx = 6
         self.keys = [
-                     Key('q', (260+0*dx, 596), 185, 185),
-                     Key('w', (260+1*dx, 596), 185, 185),
-                     Key('e', (260+2*dx, 596), 185, 185),
-                     Key('r', (260+3*dx, 596), 185, 185),
-                     Key('t', (260+4*dx, 596), 185, 185),
-                     Key('y', (260+5*dx, 596), 185, 185),
-                     Key('u', (260+6*dx, 596), 185, 185),
-                     Key('i', (260+7*dx, 596), 185, 185),
-                     Key('o', (260+8*dx, 596), 185, 185),
-                     Key('p', (260+9*dx, 596), 185, 185),
-                     Key('a', (260+rowdx+0*dx, 596+dy), 185, 185),
-                     Key('s', (260+rowdx+1*dx, 596+dy), 185, 185),
-                     Key('d', (260+rowdx+2*dx, 596+dy), 185, 185),
-                     Key('f', (260+rowdx+3*dx, 596+dy), 185, 185),
-                     Key('g', (260+rowdx+4*dx, 596+dy), 185, 185),
-                     Key('h', (260+rowdx+5*dx, 596+dy), 185, 185),
-                     Key('j', (260+rowdx+6*dx, 596+dy), 185, 185),
-                     Key('k', (260+rowdx+7*dx, 596+dy), 185, 185),
-                     Key('l', (260+rowdx+8*dx, 596+dy), 185, 185),
-                     Key('z', (260+2*rowdx+0*dx, 596+2*dy), 185, 185),
-                     Key('x', (260+2*rowdx+1*dx, 596+2*dy), 185, 185),
-                     Key('c', (260+2*rowdx+2*dx, 596+2*dy), 185, 185),
-                     Key('v', (260+2*rowdx+3*dx, 596+2*dy), 185, 185),
-                     Key('b', (260+2*rowdx+4*dx, 596+2*dy), 185, 185),
-                     Key('n', (260+2*rowdx+5*dx, 596+2*dy), 185, 185),
-                     Key('m', (260+2*rowdx+6*dx, 596+2*dy), 185, 185)
+                     Key('q', (9+0*dx, 27), 10, 10),
+                     Key('w', (9+1*dx, 27), 10, 10),
+                     Key('e', (9+2*dx, 27), 10, 10),
+                     Key('r', (9+3*dx, 27), 10, 10),
+                     Key('t', (9+4*dx, 27), 10, 10),
+                     Key('y', (9+5*dx, 27), 10, 10),
+                     Key('u', (9+6*dx, 27), 10, 10),
+                     Key('i', (9+7*dx, 27), 10, 10),
+                     Key('o', (9+8*dx, 27), 10, 10),
+                     Key('p', (9+9*dx, 27), 10, 10),
+                     Key('a', (9+rowdx+0*dx, 27+dy), 10, 10),
+                     Key('s', (9+rowdx+1*dx, 27+dy), 10, 10),
+                     Key('d', (9+rowdx+2*dx, 27+dy), 10, 10),
+                     Key('f', (9+rowdx+3*dx, 27+dy), 10, 10),
+                     Key('g', (9+rowdx+4*dx, 27+dy), 10, 10),
+                     Key('h', (9+rowdx+5*dx, 27+dy), 10, 10),
+                     Key('j', (9+rowdx+6*dx, 27+dy), 10, 10),
+                     Key('k', (9+rowdx+7*dx, 27+dy), 10, 10),
+                     Key('l', (9+rowdx+8*dx, 27+dy), 10, 10),
+                     Key('z', (9+2*rowdx+0*dx, 27+2*dy), 10, 10),
+                     Key('x', (9+2*rowdx+1*dx, 27+2*dy), 10, 10),
+                     Key('c', (9+2*rowdx+2*dx, 27+2*dy), 10, 10),
+                     Key('v', (9+2*rowdx+3*dx, 27+2*dy), 10, 10),
+                     Key('b', (9+2*rowdx+4*dx, 27+2*dy), 10, 10),
+                     Key('n', (9+2*rowdx+5*dx, 27+2*dy), 10, 10),
+                     Key('m', (9+2*rowdx+6*dx, 27+2*dy), 10, 10)
                      ]
+
+    def inch2pix(self, point):
+        if self.size_pix is None:
+            self._load_img()
+        rat = [self.size_pix[i]/float(self.size_inch[i]) for i in range(2)]
+        return [point[i]*rat[i] for i in range(2)]
+
+    def _load_img(self):
+        PrintedKeyboard.img = cv2.imread('Keyboard.png')
+        h,w = PrintedKeyboard.img.shape[:2]
+        self.size_pix = (w,h)
 
     def image(self):
         if PrintedKeyboard.img is None:
-            PrintedKeyboard.img = cv2.imread('Keyboard.png')
+            self._load_img()
         return PrintedKeyboard.img.copy()

@@ -34,7 +34,7 @@ class Fixation(object):
     def values(self):
         return [self.pos[0], self.pos[1], self.t0, self.duration]
 
-def detect_fixations(gaze_list, fixation_thresh=20): # threshold in pixels
+def detect_fixations(gaze_list, fixation_thresh=1.1): # threshold in inches
     fixations = []
     cur_fix   = None
     for i in range(len(gaze_list)-1):
