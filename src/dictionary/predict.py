@@ -31,7 +31,10 @@ def predict(dct, trial):
     keys_path = os.path.join(trial, 'keys.csv')
     char_sets = load_char_sets(keys_path)
     fix_count = len(char_sets)
-    cands = dct.find_candidates(char_sets)
+    is_first = True
+    for i in range(len(char_sets)):
+        cands = dct.find_candidates(char_sets[:i+1], is_first)
+        is_first = False
     max_freq = max([c.freq for c in cands])
     cands = sorted(cands, key=lambda c: prob(c, max_freq, fix_count), reverse=True)
     for cand in cands[:10]:

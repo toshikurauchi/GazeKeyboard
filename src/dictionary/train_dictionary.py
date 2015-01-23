@@ -4,11 +4,9 @@
 # Wikipedia word list from: http://www.monlp.com/2012/04/16/calculating-word-and-n-gram-statistics-from-a-wikipedia-corpora/
 
 from dictionary import Dictionary
-import pickle
 import os
 import csv
 
-path = 'dict.pkl'
 def train(words_file, has_freq, limit):
     dct = Dictionary()
     print 'Starting training'
@@ -29,17 +27,10 @@ def train(words_file, has_freq, limit):
                 dct.add(line.strip())
                 count += 1
     print 'Word list trained'
-    print 'Saving file...'
-    with open(path, 'wb') as file:
-        pickle.dump(dct, file, pickle.HIGHEST_PROTOCOL)
-    print 'Dictionary saved to {f}'.format(f=path)
     return dct
 
 def trained_dict():
-    if not os.path.isfile(path):
-        return train()
-    with open(path, 'rb') as file:
-        return pickle.load(file)
+    return train('count_1w.txt', True, 150000)
 
 if __name__=='__main__':
     import sys
