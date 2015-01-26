@@ -4,7 +4,6 @@ import numpy as np
 import csv
 
 from keyboard import PrintedKeyboard
-from Cython.Compiler.Naming import frame_cname
 
 class ManualKeyboardDetector(object):
     def __init__(self, corners_path, redetect=0):
