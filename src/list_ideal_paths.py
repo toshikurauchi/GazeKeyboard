@@ -6,9 +6,9 @@ from keyboard import PrintedKeyboard
 
 parser = argparse.ArgumentParser(description='Generates ideal paths for given list of words.')
 parser.add_argument('words', metavar='WORD', nargs='*',
-                    help='words to use for path generation')
+                    help='word(s) to use for path generation')
 parser.add_argument('-f', '--file', metavar='FILENAME', nargs='+',
-                    help='file containing list of words')
+                    help='file(s) containing list of words')
 parser.add_argument('-l', '--limit', metavar='N', type=int,
                     help='number of words to use from the list')
 parser.add_argument('-o', '--output', metavar='FILENAME',
