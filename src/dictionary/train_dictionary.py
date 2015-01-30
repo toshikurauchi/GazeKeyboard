@@ -41,7 +41,7 @@ def add_freq(dct, freq_file):
 
 def trained_dict():
     dct = train('google-10000-english.txt', False, float('inf'))
-    add_freq(dct, 'count_1w.txt')
+    add_freq(dct, 'count_1w.csv')
     return dct
 
 if __name__=='__main__':
@@ -54,6 +54,6 @@ if __name__=='__main__':
     if len(sys.argv) > 2:
         limit = int(sys.argv[2])
     has_freq = False
-    if words_file in ['wikipedia_wordfreq.txt', 'count_1w.txt']:
+    if words_file in ['wikipedia_wordfreq.csv', 'count_1w.csv']:
         has_freq = True
     dct = train(words_file, has_freq, limit)
