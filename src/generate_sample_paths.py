@@ -20,10 +20,11 @@ if __name__ =='__main__':
 				fixations.append(row)
 		fixations_list.append(fixations)
 
-	path_list = [];
+	samples_list = []
 	for i in range(len(word_list)):
 		p = Path(word_list[i], fixations_list[i])
 		samples = p.gen_path(50, True)
+		samples_list.append(samples)
 
 
 
