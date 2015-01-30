@@ -2,6 +2,7 @@
 # Word2 list from: http://www.manythings.org/vocabulary/lists/l/noll-about.php
 # count_1w from: http://norvig.com/ngrams/
 # Wikipedia word list from: http://www.monlp.com/2012/04/16/calculating-word-and-n-gram-statistics-from-a-wikipedia-corpora/
+# google-10000-english list (we added 'minimization' and 'cognizant' to it) from: https://github.com/first20hours/google-10000-english
 
 from dictionary import Dictionary
 import os
@@ -29,8 +30,19 @@ def train(words_file, has_freq, limit):
     print 'Word list trained'
     return dct
 
+def add_freq(dct, freq_file):
+    print 'Adding word frequencies'
+    with open(freq_file, 'rb') as f:
+        spamreader = csv.reader(f, delimiter='\t')
+        for row in spamreader:
+            word, freq = row
+            if dct.contains(word):
+                dct.add(word, int(freq))
+
 def trained_dict():
-    return train('count_1w.txt', True, 150000)
+    dct = train('google-10000-english.txt', False, float('inf'))
+    add_freq(dct, 'count_1w.txt')
+    return dct
 
 if __name__=='__main__':
     import sys
