@@ -3,6 +3,12 @@ import numpy as np
 
 from gaze_data import GazeData, Fixation
 
+def list_trial_folders(videos_path):
+    sbjs = [os.path.join(videos_path,s) for s in os.listdir(videos_path)]
+    sbjs = [s for s in sbjs if os.path.isdir(s)]
+    trials = [os.path.join(sbj,t) for sbj in sbjs for t in os.listdir(sbj)]
+    return [t for t in trials if os.path.isdir(t)]
+
 def correlate_gaze(gaze_list,timestamps, frame_size):
     '''
     Source: Pupil-labs (https://github.com/pupil-labs/pupil/blob/master/pupil_src/player/player_methods.py)
@@ -56,4 +62,3 @@ def load_or_detect_fixations(folder, redetect=0):
         VideoProcessor(folder, redetect).process()
     v = np.load(fixations_path)
     return [Fixation.from_values(v[i]) for i in range(v.shape[0])]
-

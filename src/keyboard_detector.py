@@ -6,7 +6,7 @@ import csv
 from keyboard import PrintedKeyboard
 
 class ManualKeyboardDetector(object):
-    def __init__(self, corners_path, redetect=0):
+    def __init__(self, corners_path, redetect=False):
         self.prev_frame = None
         self.win_name = 'Select corners'
         self.points = []
