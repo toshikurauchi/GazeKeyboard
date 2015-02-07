@@ -7,6 +7,13 @@ class GazeData(object):
         self.timestamp = timestamp
         self.confidence = confidence
 
+    @classmethod
+    def from_values(cls, values):
+        return cls(values[0], values[1], values[2])
+
+    def values(self):
+        return [self.point, self.timestamp, self.confidence]
+
 class Fixation(object):
     def __init__(self, pos=None, t0=None, duration=0):
         self.pos = pos
@@ -34,7 +41,7 @@ class Fixation(object):
     def values(self):
         return [self.pos[0], self.pos[1], self.t0, self.duration]
 
-def detect_fixations(gaze_list, fixation_thresh=1.1): # threshold in inches
+def detect_fixations(gaze_list, fixation_thresh=2): # threshold in inches
     fixations = []
     cur_fix   = None
     for i in range(len(gaze_list)-1):
@@ -47,4 +54,30 @@ def detect_fixations(gaze_list, fixation_thresh=1.1): # threshold in inches
         elif cur_fix is not None:
             fixations.append(cur_fix)
             cur_fix = None
+    if cur_fix is not None:
+        fixations.append(cur_fix)
     return fixations
+
+if __name__=='__main__':
+    import argparse
+    from util import list_trial_folders
+    import os
+
+    parser = argparse.ArgumentParser(description='Generates ideal paths for given list of words.')
+    parser.add_argument('folders', metavar='FOLDER', nargs='*',
+                        help='trial folder(s) containing data to be processed')
+    args = parser.parse_args()
+
+    folders = args.folders
+    if not folders:
+        folders = list_trial_folders('../videos')
+    for f in folders:
+        data_path = os.path.join(f, 'keyboard_gaze.npy')
+        fix_path = os.path.join(f, 'keyboard_fixations.npy')
+        if not os.path.isfile(data_path):
+            continue
+        print 'Processing {f}...'.format(f=data_path)
+        data = np.load(data_path)
+        gaze = [GazeData.from_values(d) for d in data]
+        fixations = detect_fixations(gaze)
+        np.save(fix_path, [f.values() for f in fixations])
