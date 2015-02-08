@@ -20,6 +20,7 @@ class Fixation(object):
         self.t0 = t0
         self.duration = duration
         self.data = []
+        self.fixations = []
 
     @classmethod
     def from_values(cls, values):
@@ -41,22 +42,26 @@ class Fixation(object):
     def values(self):
         return [self.pos[0], self.pos[1], self.t0, self.duration]
 
-def detect_fixations(gaze_list, fixation_thresh=2): # threshold in inches
+def distance(cur_fix, cur_gaze):
+    return norm(np.mean(cur_fix, 0)-cur_gaze)
+
+def detect_fixations(gaze_list, start_idx, fixation_radius=100, min_samples=5):
+    cur_fix   = []
     fixations = []
-    cur_fix   = None
-    for i in range(len(gaze_list)-1):
-        g1,g2 = gaze_list[i],gaze_list[i+1]
-        dist = norm(g2.point-g1.point)
-        if dist < fixation_thresh:
-            if cur_fix is None:
-                cur_fix = Fixation()
-            cur_fix.add_data(g1)
-        elif cur_fix is not None:
-            fixations.append(cur_fix)
-            cur_fix = None
-    if cur_fix is not None:
-        fixations.append(cur_fix)
-    return fixations
+    i = start_idx
+    while i < len(gaze_list):
+        cur_fix.append(gaze_list[i])
+        start_idx = i
+        #print "START IDx: ", start_idx
+        while i+1 < len(gaze_list) and distance(cur_fix, gaze_list[i+1]) < fixation_radius:
+            #print "DISTANCE: ", distance(cur_fix, gaze_list[i+1])
+            cur_fix.append(gaze_list[i+1])
+            i += 1
+        if len(cur_fix) >= min_samples and i < len(gaze_list):
+            fixations.append(np.mean(cur_fix, 0))
+        cur_fix = []
+        i += 1
+    return fixations, start_idx
 
 if __name__=='__main__':
     import argparse

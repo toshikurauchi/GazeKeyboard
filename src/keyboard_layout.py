@@ -12,10 +12,16 @@ class Key(object):
     def relative_dist(self, point):
         dif = [point[i] - self.center[i] for i in range(2)]
         return math.sqrt(dif[0]**2 + dif[1]**2)/self.rad
+        
+    def in_key(self, point):
+        return (self.top_left[0] < point[0] < (self.top_left[0] + self.width)) and ((self.top_left[1] + self.height) > point[1] > self.top_left[1])
 
 class PrintedKeyboardLayout(object):
     def __init__(self):
         self.corners = [(6,24),(130,24),(130,64),(6,64)]
+        self.width = 17*8
+        self.height = 11*8
+        # pixel resolution = (1224, 792)
         x0, y0 = 9, 27
         width, height = 10, 10
         dx, dy = 12, 12
@@ -46,6 +52,7 @@ class PrintedKeyboardLayout(object):
                      Key('b', (x0+2*rowdx+4*dx, y0+2*dy), width, height),
                      Key('n', (x0+2*rowdx+5*dx, y0+2*dy), width, height),
                      Key('m', (x0+2*rowdx+6*dx, y0+2*dy), width, height)]
+        self.spacebar = Key('spacebar', (38, 60), 61, 15)
 
     def key_center(self, key):
         for k in self.keys:

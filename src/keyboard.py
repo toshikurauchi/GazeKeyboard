@@ -51,22 +51,28 @@ class PrintedKeyboard(Keyboard):
     img = None
 
     def __init__(self, corners=[]):
-        layout = PrintedKeyboardLayout()
+        self.layout = PrintedKeyboardLayout()
         self.corners = sort_clockwise(corners)
-        self.real_corners = sort_clockwise(np.array(layout.corners))
+        self.real_corners = sort_clockwise(np.array(self.layout.corners))
         self._init_homog()
-        self.size_inch = (136,88)
+        self.size_inch = (self.layout.width,self.layout.height)
         self.size_pix = None
-        self.keys = layout.keys
+        self.keys = self.layout.keys
 
     def inch2pix(self, point):
         if self.size_pix is None:
             self._load_img()
         rat = [self.size_pix[i]/float(self.size_inch[i]) for i in range(2)]
         return [point[i]*rat[i] for i in range(2)]
+        
+    def pix2inch(self, point):
+        if self.size_pix is None:
+            self._load_img()
+        rat = [self.size_pix[i]/float(self.size_inch[i]) for i in range(2)]
+        return [point[i]/rat[i] for i in range(2)]
 
     def _load_img(self):
-        PrintedKeyboard.img = cv2.imread('Keyboard.png')
+        PrintedKeyboard.img = cv2.imread('Keyboard2b.png')
         h,w = PrintedKeyboard.img.shape[:2]
         self.size_pix = (w,h)
 
