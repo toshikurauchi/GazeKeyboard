@@ -4,7 +4,7 @@ This application shows the keyboard image with the current gaze position over it
 
 ## Requirements
 
-To run this visualizer you will need to install the EyeTribe SDK and boost library (there are prebuilt binaries for Windows).
+To run this visualizer you will need to install the EyeTribe SDK and boost library (there are prebuilt binaries for Windows if your Qt is using a MS visual c++ compiler - if you are using MINGW you will have to build boost from source).
 
 ## Environment setup
 
