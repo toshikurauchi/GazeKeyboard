@@ -1,32 +1,30 @@
 import csv
 import os
+import sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
 
 from train_dictionary import trained_dict
+from util import load_char_sets
 
-LENGTH_WEIGHT   = 0.2
-LANGUAGE_WEIGHT = 0.5
-TIME_WEIGHT     = 0.3
-
-def load_char_sets(keys_path):
-    with open(keys_path, 'rb') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',')
-        cur_id = -1
-        char_sets = []
-        for row in spamreader:
-            new_id, char, weight, time = int(row[0]), row[1], float(row[2]), float(row[3])
-            if new_id == cur_id:
-                cur_char_set[char] = {'w':weight,'t':time}
-            else:
-                cur_id = new_id
-                cur_char_set = {char:{'w':weight,'t':time}}
-                char_sets.append(cur_char_set)
-    return char_sets
+LANGUAGE_WEIGHT = 0.1
+LENGTH_WEIGHT   = 0.4
+TIME_WEIGHT     = 0.1
+PATH_WEIGHT     = 0.4
 
 def add_prob(cand, max_freq, fix_count):
-    cand.p = LANGUAGE_WEIGHT * cand.freq/float(max_freq) \
+    cand.freq_w = cand.freq/float(max_freq)
+    cand.p = LANGUAGE_WEIGHT * cand.freq_w \
            + LENGTH_WEIGHT * cand.size_w \
-           + TIME_WEIGHT * cand.weighted_time
+           + TIME_WEIGHT * cand.weighted_time \
+           + PATH_WEIGHT * cand.path_w
     return cand
+
+def print_cand(c):
+    args = {'w':c.word, 'f':c.freq_w, 't':c.weighted_time,
+            's':c.size_w, 'p':c.path_w, 'u': c.used_path_w, 'P':c.p, 'd':c.distances}
+    print '{w:<13}: freq={f:.2f}, time={t:.2f}, size={s:.2f}, path={p:.2f}, u_path={u:.2f}, P={P:.2f}, {d}'.format(**args)
 
 def predict(dct, trial):
     keys_path = os.path.join(trial, 'keys.csv')
@@ -42,7 +40,7 @@ def predict(dct, trial):
         cands = map(lambda c: add_prob(c, max_freq, fix_count), cands)
         cands = sorted(cands, key=lambda c: c.p, reverse=True)
         for cand in cands[:10]:
-            print cand.word, cand.freq/float(max_freq), cand.size_w, cand.p
+            print_cand(cand)
     return cands
 
 if __name__=='__main__':
@@ -72,9 +70,9 @@ if __name__=='__main__':
                     continue
                 print 'Predictions for {f}'.format(f=trial)
                 cands = predict(dct, trial)
-                found = [c for c in cands if c.word in word or word in c.word]
+                found = [c for c in cands if word in c.word]
                 print 'Similar candidates:' if len(found)>0 else 'No candidates found :('
                 for f in found:
-                    print f.word, f.freq, f.size_w, f.p
+                    print_cand(f)
                 print
 

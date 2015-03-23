@@ -1,6 +1,13 @@
 import numpy as np
+from numpy.linalg import norm
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
 
-from levenshtein import levenshtein_iter, find_used
+from levenshtein import levenshtein_iter, find_used, fill_gaps
+from keyboard_layout import PrintedKeyboardLayout
+keyboard = PrintedKeyboardLayout()
 
 class Trie(object):
     ''' Based on http://stackoverflow.com/questions/11015320/how-to-create-a-trie-in-python '''
@@ -75,18 +82,65 @@ class Dictionary(Trie):
         if self._end in cur_dict.keys(): # Is a word
             #if word not in ['the','and','of','to','a','as','in','on','for','is','that','i','by','with','you','it','not','or','be','are','this','from','at','your','new','more','an','was','we','will','home']: # TODO REMOVE THIS CONDITION!
             used = find_used(self.enter_idx, depth, cur_dict[self._ldist])
-            cand.add(WordCandidate(word, cur_dict[self._end][self._count], (len(word)-cur_dict[self._ldist])/float(len(char_sets)),sum([char_sets[u[1]][word[u[0]]]['w']*char_sets[u[1]][word[u[0]]]['t'] for u in used])))
+            filled = fill_gaps(word, used, char_sets, keyboard.key_center)
+            cand.add(WordCandidate(word, cur_dict[self._end][self._count], cur_dict[self._ldist], char_sets, used, filled))
         for key in cur_dict.keys():
             if key not in self.flags:
                 cand.update(self._find_candidates_rec(depth+1, cur_dict[key], word, key, char_sets, a10_dist, cur_dict[self._ldist]))
         return cand
 
+def path_weight(word, buckets, indices):
+    if not word or not buckets or not indices:
+        return 0
+    prev_key_pos = np.array(buckets[0]['_p'])
+    prev_pos = prev_key_pos
+    distances = []
+    weights = []
+    cur_bucket = 0
+    total_dist = 0
+    for idx in indices:
+        stop_bucket = idx[1]
+        dist = 0
+        while cur_bucket <= stop_bucket:
+            cur_pos = np.array(buckets[cur_bucket]['_p'])
+            dist += norm(cur_pos-prev_pos)
+            prev_pos = cur_pos
+            cur_bucket += 1
+        cur_bucket = stop_bucket
+        key_pos = np.array(keyboard.key_center(word[idx[0]]))
+        key_dist = norm(cur_pos-prev_key_pos)
+        distances.append((key_dist, dist))
+        if key_dist and len(distances) > 1: # Isn't the first
+            weights.append(dist)
+        prev_key_pos = cur_pos
+        prev_pos = prev_key_pos
+    # Account for the rest of the buckets
+    dist = 0
+    while cur_bucket < len(buckets):
+        cur_pos = np.array(buckets[cur_bucket]['_p'])
+        dist += norm(cur_pos-prev_pos)
+        prev_pos = cur_pos
+        cur_bucket += 1
+    key_dist = norm(cur_pos-prev_key_pos)
+    total_dist += dist
+    distances.append((key_dist, dist))
+
+    used_ratio = 0
+    path_w = 0
+    if total_dist:
+        used_ratio = (total_dist-(distances[0][1]+distances[-1][1]))/total_dist
+    distances = [0 if d[1] == 0 else min(d[0]/d[1], d[1]/d[0]) for d in distances[1:-1] if d[0] != 0]
+    if distances:
+        path_w = np.average(distances, weights=weights)
+    return path_w, used_ratio, distances
+
 class WordCandidate(object):
-    def __init__(self, word, freq, size_w, weighted_time):
+    def __init__(self, word, freq, ldist, char_sets, used, filled):
         self.word = word
         self.freq = freq
-        self.size_w = size_w
-        self.weighted_time = weighted_time
+        self.size_w = (len(word)-ldist)/float(len(char_sets))
+        self.weighted_time = sum([char_sets[u[1]][word[u[0]]]*char_sets[u[1]]['_t'] for u in used])
+        self.path_w, self.used_path_w, self.distances = path_weight(word, char_sets, filled)
 
     def __eq__(self, other):
         return self.word.__eq__(other.word)

@@ -22,7 +22,7 @@ class Extractor(object):
                 for k in wk:
                     if verbose:
                         print "Key: '{k}' weight: {w}".format(k=k.key, w=k.weight)
-                    spamwriter.writerow([idx, k.key, k.weight, f.duration])
+                    spamwriter.writerow([idx, k.key, k.weight, f.duration, f.pos[0], f.pos[1]])
                 idx += 1
 
 if __name__=='__main__':

@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import csv
 
 from gaze_data import GazeData, Fixation
 
@@ -62,3 +63,18 @@ def load_or_detect_fixations(folder, redetect=0):
         VideoProcessor(folder, redetect).process()
     v = np.load(fixations_path)
     return [Fixation.from_values(v[i]) for i in range(v.shape[0])]
+
+def load_char_sets(keys_path):
+    with open(keys_path, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',')
+        cur_id = -1
+        char_sets = []
+        for row in spamreader:
+            new_id, char, weight, time, pos = int(row[0]), row[1], float(row[2]), float(row[3]), (float(row[4]), float(row[5]))
+            if new_id == cur_id:
+                cur_char_set[char] = weight
+            else:
+                cur_id = new_id
+                cur_char_set = {char:weight,'_t':time,'_p':pos}
+                char_sets.append(cur_char_set)
+    return char_sets
