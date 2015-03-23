@@ -29,3 +29,6 @@ HEADERS  += KeyboardImageWindow.h \
 
 FORMS    += KeyboardImageWindow.ui \
     KeyboardWindow.ui
+
+OTHER_FILES += \
+    README.md
