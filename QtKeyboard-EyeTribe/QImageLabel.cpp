@@ -30,6 +30,13 @@ void QImageLabel::paintEvent(QPaintEvent *event) {
     imgPos.setHeight(scaledPix.height());
 }
 
+void QImageLabel::resizeEvent(QResizeEvent *event)
+{
+    QSize imgSize = pix.size();
+    imgSize.scale(event->size(), Qt::KeepAspectRatio);
+    emit resized(imgSize);
+}
+
 const QPixmap* QImageLabel::pixmap() const {
     return &pix;
 }

@@ -10,6 +10,9 @@ public:
     explicit GazeOverlay(QWidget *parent = 0, int radius = 10);
     void setGaze(QPoint gaze);
 
+protected slots:
+    void imageResized(QSize size);
+
 protected:
     void paintEvent(QPaintEvent *event);
 

@@ -13,9 +13,15 @@ void GazeOverlay::setGaze(QPoint gaze)
     show = true;
 }
 
+void GazeOverlay::imageResized(QSize size)
+{
+    resize(size);
+}
+
 void GazeOverlay::paintEvent(QPaintEvent *event)
 {
-    if (!show) return;
+    //if (!show) return;
+    m_gaze = QPoint(width()/2, height()/2);
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);

@@ -18,13 +18,13 @@ public:
     explicit KeyboardImageWindow(QWidget *parent = 0);
     ~KeyboardImageWindow();
 
-protected:
-    void resizeEvent(QResizeEvent *event);
-
 private:
     Ui::KeyboardImageWindow *ui;
     GazeOverlay *gazeOverlay;
     GazeListener *gazeListener;
+
+private slots:
+    void toggleRecording();
 };
 
 #endif // KEYBOARDIMAGEWINDOW_H

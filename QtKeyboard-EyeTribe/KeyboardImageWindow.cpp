@@ -1,4 +1,5 @@
 #include <QResizeEvent>
+#include <QDebug>
 
 #include "KeyboardImageWindow.h"
 #include "ui_KeyboardImageWindow.h"
@@ -10,8 +11,12 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     ui->setupUi(this);
     QPixmap pixmap("../src/Keyboard2b.png");
     ui->imageLabel->setPixmap(pixmap);
-    gazeOverlay = new GazeOverlay(ui->centralwidget, 10);
+    gazeOverlay = new GazeOverlay(ui->imageLabel, 10);
     gazeListener = new GazeListener(gazeOverlay);
+    ui->recordingLabel->setStyleSheet("QLabel { color : red; }");
+
+    connect(ui->recordButton, SIGNAL(clicked()), this, SLOT(toggleRecording()));
+    connect(ui->imageLabel, SIGNAL(resized(QSize)), gazeOverlay, SLOT(imageResized(QSize)));
 }
 
 KeyboardImageWindow::~KeyboardImageWindow()
@@ -21,8 +26,17 @@ KeyboardImageWindow::~KeyboardImageWindow()
     delete gazeOverlay;
 }
 
-void KeyboardImageWindow::resizeEvent(QResizeEvent *event)
+void KeyboardImageWindow::toggleRecording()
 {
-    gazeOverlay->resize(event->size());
-    event->accept();
+    if (ui->recordingLabel->text().toLower().contains("recording"))
+    {
+        ui->recordingLabel->setText("");
+        ui->recordButton->setText("Record");
+    }
+    else
+    {
+        ui->recordingLabel->setText("Recording");
+        ui->recordButton->setText("Stop");
+    }
+    ui->recordingLabel->repaint();
 }

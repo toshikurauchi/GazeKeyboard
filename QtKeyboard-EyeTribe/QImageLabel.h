@@ -12,11 +12,15 @@ public:
     const QPixmap* pixmap() const;
     QRect imagePos();
 
+signals:
+    void resized(QSize size);
+
 public slots:
     void setPixmap(const QPixmap&);
 
 protected:
     void paintEvent(QPaintEvent *);
+    void resizeEvent(QResizeEvent *event);
 
 private:
     QPixmap pix;
