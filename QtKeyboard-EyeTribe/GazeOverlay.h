@@ -2,6 +2,7 @@
 #define CIRCLEWIDGET_H
 
 #include <QWidget>
+#include <QTimer>
 
 class GazeOverlay : public QWidget
 {
@@ -20,7 +21,7 @@ private:
     int m_radius;
     QPoint m_gaze;
     bool show;
-
+    QTimer timer;
 };
 
 #endif // CIRCLEWIDGET_H

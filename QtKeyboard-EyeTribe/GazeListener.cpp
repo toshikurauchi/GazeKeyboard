@@ -1,7 +1,7 @@
 #include <QDebug>
 #include "GazeListener.h"
 
-const QString GazeListener::header = "raw_x,raw_y,smoothed_x,smoothed_y,fix";
+const QString GazeListener::header = "raw_x,raw_y,smoothed_x,smoothed_y,fix\n";
 
 GazeListener::GazeListener(QObject *parent, GazeOverlay *gazeOverlay) :
     QObject(parent), m_gazeoverlay(gazeOverlay), file(0), out_stream(0)
@@ -53,13 +53,13 @@ void GazeListener::on_gaze_data(gtl::GazeData const & gaze_data)
         emit newGaze(avg);
 
         // Normalize coordinates
-        raw.setX(raw.x()/m_gazeoverlay->width());
-        raw.setY(raw.y()/m_gazeoverlay->height());
-        avg.setX(avg.x()/m_gazeoverlay->width());
-        avg.setY(avg.y()/m_gazeoverlay->height());
+        float rawX = (float) raw.x()/m_gazeoverlay->width();
+        float rawY = (float) raw.y()/m_gazeoverlay->height();
+        float avgX = (float) avg.x()/m_gazeoverlay->width();
+        float avgY = (float) avg.y()/m_gazeoverlay->height();
         if (file)
         {
-            *out_stream << raw.x() << "," << raw.y() << "," <<  avg.x() << "," << avg.y() << "," << gaze_data.fix;
+            *out_stream << rawX << "," << rawY << "," <<  avgX << "," << avgY << "," << gaze_data.fix << "\n";
         }
     }
 }

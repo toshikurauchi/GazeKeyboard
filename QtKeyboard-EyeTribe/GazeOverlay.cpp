@@ -4,15 +4,16 @@
 #include "GazeOverlay.h"
 
 GazeOverlay::GazeOverlay(QWidget *parent, int radius) :
-    QWidget(parent), m_radius(radius), show(false)
+    QWidget(parent), m_radius(radius), show(false), timer(this)
 {
+    connect(&timer, SIGNAL(timeout()), this, SLOT(repaint()));
+    timer.start(17);
 }
 
 void GazeOverlay::newGaze(QPoint gaze)
 {
     m_gaze = gaze;
     show = true;
-    repaint();
 }
 
 void GazeOverlay::imageResized(QSize size)
