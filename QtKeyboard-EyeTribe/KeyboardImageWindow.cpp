@@ -13,11 +13,12 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     QPixmap pixmap("../src/Keyboard2b.png");
     ui->imageLabel->setPixmap(pixmap);
     gazeOverlay = new GazeOverlay(ui->imageLabel, 10);
-    gazeListener = new GazeListener(gazeOverlay);
+    gazeListener = new GazeListener(this, gazeOverlay);
     ui->recordingLabel->setStyleSheet("QLabel { color : red; }");
 
     connect(ui->recordButton, SIGNAL(clicked()), this, SLOT(toggleRecording()));
     connect(ui->imageLabel, SIGNAL(resized(QSize)), gazeOverlay, SLOT(imageResized(QSize)));
+    connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
 }
 
 KeyboardImageWindow::~KeyboardImageWindow()

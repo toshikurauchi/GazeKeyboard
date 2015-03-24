@@ -1,9 +1,10 @@
+#include <QDebug>
 #include "GazeListener.h"
 
 const QString GazeListener::header = "raw_x,raw_y,smoothed_x,smoothed_y,fix";
 
-GazeListener::GazeListener(GazeOverlay *gazeOverlay) :
-    m_gazeoverlay(gazeOverlay), file(0), out_stream(0)
+GazeListener::GazeListener(QObject *parent, GazeOverlay *gazeOverlay) :
+    QObject(parent), m_gazeoverlay(gazeOverlay), file(0), out_stream(0)
 {
     // Connect to the server in push mode on the default TCP port (6555)
     if(m_api.connect(true))
@@ -49,7 +50,7 @@ void GazeListener::on_gaze_data(gtl::GazeData const & gaze_data)
         // Get gaze position in keyboard image coordinates
         raw = m_gazeoverlay->mapFromGlobal(raw);
         avg = m_gazeoverlay->mapFromGlobal(avg);
-        m_gazeoverlay->setGaze(avg);
+        emit newGaze(avg);
 
         // Normalize coordinates
         raw.setX(raw.x()/m_gazeoverlay->width());

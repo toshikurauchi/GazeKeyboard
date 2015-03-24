@@ -1,5 +1,6 @@
 .DS_Store
 *.pyc
+*.pro.user*
 .project
 .pydevproject
 build-QtKeyboard-EyeTribe*

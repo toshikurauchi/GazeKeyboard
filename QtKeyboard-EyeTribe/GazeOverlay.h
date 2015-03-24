@@ -8,9 +8,9 @@ class GazeOverlay : public QWidget
     Q_OBJECT
 public:
     explicit GazeOverlay(QWidget *parent = 0, int radius = 10);
-    void setGaze(QPoint gaze);
 
 protected slots:
+    void newGaze(QPoint gaze);
     void imageResized(QSize size);
 
 protected:

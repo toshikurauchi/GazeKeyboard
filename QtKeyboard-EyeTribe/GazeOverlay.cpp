@@ -1,4 +1,5 @@
 #include <QPainter>
+#include <QDebug>
 
 #include "GazeOverlay.h"
 
@@ -7,10 +8,11 @@ GazeOverlay::GazeOverlay(QWidget *parent, int radius) :
 {
 }
 
-void GazeOverlay::setGaze(QPoint gaze)
+void GazeOverlay::newGaze(QPoint gaze)
 {
     m_gaze = gaze;
     show = true;
+    repaint();
 }
 
 void GazeOverlay::imageResized(QSize size)
@@ -20,8 +22,7 @@ void GazeOverlay::imageResized(QSize size)
 
 void GazeOverlay::paintEvent(QPaintEvent *event)
 {
-    //if (!show) return;
-    m_gaze = QPoint(width()/2, height()/2);
+    if (!show) return;
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
