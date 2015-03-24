@@ -1,5 +1,6 @@
 #include <QResizeEvent>
 #include <QDebug>
+#include <QFileDialog>
 
 #include "KeyboardImageWindow.h"
 #include "ui_KeyboardImageWindow.h"
@@ -32,11 +33,17 @@ void KeyboardImageWindow::toggleRecording()
     {
         ui->recordingLabel->setText("");
         ui->recordButton->setText("Record");
+        gazeListener->stopRecording();
     }
     else
     {
-        ui->recordingLabel->setText("Recording");
-        ui->recordButton->setText("Stop");
+        QString filename = QFileDialog::getSaveFileName(this, "Choose file name", "../data/recordings/", "*.csv");
+        if (!filename.isEmpty())
+        {
+            ui->recordingLabel->setText("Recording");
+            ui->recordButton->setText("Stop");
+            gazeListener->startRecording(filename);
+        }
     }
     ui->recordingLabel->repaint();
 }
