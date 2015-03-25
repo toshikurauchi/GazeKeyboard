@@ -12,12 +12,13 @@ public:
 
 protected slots:
     void newGaze(QPoint gaze);
-    void imageResized(QSize size);
+    void imageRescaled(QRect imgPos);
 
 protected:
     void paintEvent(QPaintEvent *event);
 
 private:
+    QPoint origin;
     int m_radius;
     QPoint m_gaze;
     bool show;

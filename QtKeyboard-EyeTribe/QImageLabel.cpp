@@ -17,24 +17,23 @@ void QImageLabel::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    QSize pixSize = pix.size();
-    pixSize.scale(event->rect().size(), Qt::KeepAspectRatio);
-
-    QPixmap scaledPix = pix.scaled(pixSize,
-                                   Qt::KeepAspectRatio,
-                                   Qt::SmoothTransformation
-                                   );
-
-    painter.drawPixmap(QPoint(), scaledPix);
-    imgPos.setWidth(scaledPix.width());
-    imgPos.setHeight(scaledPix.height());
+    painter.drawPixmap(origin, scaledPix);
 }
 
 void QImageLabel::resizeEvent(QResizeEvent *event)
 {
-    QSize imgSize = pix.size();
-    imgSize.scale(event->size(), Qt::KeepAspectRatio);
-    emit resized(imgSize);
+    QSize pixSize = pix.size();
+    pixSize.scale(event->size(), Qt::KeepAspectRatio);
+    scaledPix = pix.scaled(pixSize,
+                           Qt::KeepAspectRatio,
+                           Qt::SmoothTransformation
+                           );
+    origin.setX((width() - scaledPix.width())/2);
+    origin.setY((height() - scaledPix.height())/2);
+    imgPos.setWidth(scaledPix.width());
+    imgPos.setHeight(scaledPix.height());
+    imgPos.setTopLeft(origin);
+    emit rescaled(imgPos);
 }
 
 const QPixmap* QImageLabel::pixmap() const {

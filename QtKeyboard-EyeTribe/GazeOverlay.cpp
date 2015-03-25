@@ -1,5 +1,4 @@
 #include <QPainter>
-#include <QDebug>
 
 #include "GazeOverlay.h"
 
@@ -16,13 +15,15 @@ void GazeOverlay::newGaze(QPoint gaze)
     show = true;
 }
 
-void GazeOverlay::imageResized(QSize size)
+void GazeOverlay::imageRescaled(QRect imgPos)
 {
-    resize(size);
+    origin = imgPos.topLeft();
+    resize(QSize(imgPos.x() + imgPos.width(), imgPos.y() + imgPos.height()));
 }
 
 void GazeOverlay::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event);
     if (!show) return;
 
     QPainter painter(this);

@@ -13,7 +13,7 @@ public:
     QRect imagePos();
 
 signals:
-    void resized(QSize size);
+    void rescaled(QRect imgPos);
 
 public slots:
     void setPixmap(const QPixmap&);
@@ -24,6 +24,8 @@ protected:
 
 private:
     QPixmap pix;
+    QPixmap scaledPix;
+    QPoint origin;
     QRect imgPos;
 };
 

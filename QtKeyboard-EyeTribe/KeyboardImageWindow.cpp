@@ -17,7 +17,7 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     ui->recordingLabel->setStyleSheet("QLabel { color : red; }");
 
     connect(ui->recordButton, SIGNAL(clicked()), this, SLOT(toggleRecording()));
-    connect(ui->imageLabel, SIGNAL(resized(QSize)), gazeOverlay, SLOT(imageResized(QSize)));
+    connect(ui->imageLabel, SIGNAL(rescaled(QRect)), gazeOverlay, SLOT(imageRescaled(QRect)));
     connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
 }
 
