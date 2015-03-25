@@ -50,13 +50,14 @@ void GazeListener::on_gaze_data(gtl::GazeData const & gaze_data)
         // Get gaze position in keyboard image coordinates
         raw = m_gazeoverlay->mapFromGlobal(raw);
         avg = m_gazeoverlay->mapFromGlobal(avg);
-        emit newGaze(avg);
+        emit newGaze(raw);
 
         // Normalize coordinates
-        float rawX = (float) raw.x()/m_gazeoverlay->width();
-        float rawY = (float) raw.y()/m_gazeoverlay->height();
-        float avgX = (float) avg.x()/m_gazeoverlay->width();
-        float avgY = (float) avg.y()/m_gazeoverlay->height();
+        QRect imgPos = m_gazeoverlay->imagePosition();
+        float rawX = (float) (raw.x() - imgPos.x())/imgPos.width();
+        float rawY = (float) (raw.y() - imgPos.y())/imgPos.height();
+        float avgX = (float) (avg.x() - imgPos.x())/imgPos.width();
+        float avgY = (float) (avg.y() - imgPos.y())/imgPos.height();
         if (file)
         {
             *out_stream << gaze_data.time << "," << rawX << "," << rawY << "," <<  avgX << "," << avgY << "," << gaze_data.fix << "\n";

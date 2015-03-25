@@ -1,5 +1,6 @@
 #include <QPainter>
 #include <QPaintEvent>
+#include <QDebug>
 
 #include "QImageLabel.h"
 
@@ -30,10 +31,8 @@ void QImageLabel::resizeEvent(QResizeEvent *event)
                            );
     origin.setX((width() - scaledPix.width())/2);
     origin.setY((height() - scaledPix.height())/2);
-    imgPos.setWidth(scaledPix.width());
-    imgPos.setHeight(scaledPix.height());
-    imgPos.setTopLeft(origin);
-    emit rescaled(imgPos);
+    imgPos = QRect(origin, scaledPix.size());
+    emit rescaled(event->size(), imgPos);
 }
 
 const QPixmap* QImageLabel::pixmap() const {

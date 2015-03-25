@@ -1,4 +1,5 @@
 #include <QPainter>
+#include <QDebug>
 
 #include "GazeOverlay.h"
 
@@ -9,16 +10,21 @@ GazeOverlay::GazeOverlay(QWidget *parent, int radius) :
     timer.start(17);
 }
 
+QRect GazeOverlay::imagePosition()
+{
+    return m_imgPos;
+}
+
 void GazeOverlay::newGaze(QPoint gaze)
 {
     m_gaze = gaze;
     show = true;
 }
 
-void GazeOverlay::imageRescaled(QRect imgPos)
+void GazeOverlay::imageRescaled(QSize labelSize, QRect imgPos)
 {
-    origin = imgPos.topLeft();
-    resize(QSize(imgPos.x() + imgPos.width(), imgPos.y() + imgPos.height()));
+    m_imgPos = imgPos;
+    resize(labelSize);
 }
 
 void GazeOverlay::paintEvent(QPaintEvent *event)

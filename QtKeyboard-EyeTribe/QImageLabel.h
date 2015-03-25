@@ -13,7 +13,7 @@ public:
     QRect imagePos();
 
 signals:
-    void rescaled(QRect imgPos);
+    void rescaled(QSize labelSize, QRect imgPos);
 
 public slots:
     void setPixmap(const QPixmap&);
