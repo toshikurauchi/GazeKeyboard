@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QSettings>
+#include <QQuickView>
+#include <QQmlProperty>
 
 #include "KeyboardImageWindow.h"
 #include "ui_KeyboardImageWindow.h"
@@ -13,12 +15,21 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     QCoreApplication::setApplicationName("CameraMouseSuite");
     ui->setupUi(this);
 
+    QQuickView *view = new QQuickView();
+    view->setOpacity(0);
+    view->setColor(palette().color(QPalette::Background));
+    QWidget *container = QWidget::createWindowContainer(view, this);
+    container->setMinimumSize(20, 20);
+    container->setStyleSheet("background-color:black;");
+    view->setSource(QUrl::fromLocalFile("RecordingLight.qml"));
+    recLight = view->rootObject();
+    ui->infoBar->insertWidget(0, container);
+
     readSettings();
     QPixmap pixmap("../src/Keyboard2b.png");
     ui->imageLabel->setPixmap(pixmap);
     gazeOverlay = new GazeOverlay(ui->imageLabel, 10);
     gazeListener = new GazeListener(this, gazeOverlay);
-    ui->recordingLabel->setStyleSheet("QLabel { color : red; }");
 
     connect(ui->recordButton, SIGNAL(clicked()), this, SLOT(toggleRecording()));
     connect(ui->imageLabel, SIGNAL(rescaled(QSize, QRect)), gazeOverlay, SLOT(imageRescaled(QSize, QRect)));
@@ -52,22 +63,21 @@ void KeyboardImageWindow::writeSettings()
 
 void KeyboardImageWindow::toggleRecording()
 {
-    if (ui->recordingLabel->text().toLower().contains("recording"))
+    if (ui->recordButton->text().toLower().contains("stop"))
     {
-        ui->recordingLabel->setText("");
         ui->recordButton->setText("Record");
         gazeListener->stopRecording();
+        recLight->setProperty("recording", false);
     }
     else
     {
         QString filename = QFileDialog::getSaveFileName(this, "Choose file name", recordingsDir, "*.csv");
         if (!filename.isEmpty())
         {
-            ui->recordingLabel->setText("Recording");
             ui->recordButton->setText("Stop");
             recordingsDir = QFileInfo(filename).absoluteDir().absolutePath();
             gazeListener->startRecording(filename);
+            recLight->setProperty("recording", true);
         }
     }
-    ui->recordingLabel->repaint();
 }

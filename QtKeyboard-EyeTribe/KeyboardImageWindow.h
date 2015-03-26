@@ -2,6 +2,7 @@
 #define KEYBOARDIMAGEWINDOW_H
 
 #include <QMainWindow>
+#include <QQuickItem>
 
 #include "GazeOverlay.h"
 #include "GazeListener.h"
@@ -26,6 +27,7 @@ private:
     GazeOverlay *gazeOverlay;
     GazeListener *gazeListener;
     QString recordingsDir;
+    QQuickItem *recLight;
 
     void readSettings();
     void writeSettings();

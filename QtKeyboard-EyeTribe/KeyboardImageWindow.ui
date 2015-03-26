@@ -22,18 +22,11 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="infoBar">
       <item>
        <widget class="QPushButton" name="recordButton">
         <property name="text">
          <string>Record</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="recordingLabel">
-        <property name="text">
-         <string/>
         </property>
        </widget>
       </item>

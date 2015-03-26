@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui quick
 
 include(tet-cpp-client/tet-cpp-client.pri)
 
@@ -13,22 +13,23 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QtKeyboard-EyeTribe
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
-    KeyboardWindow.cpp \
     KeyboardImageWindow.cpp \
     QImageLabel.cpp \
     GazeOverlay.cpp \
     GazeListener.cpp
 
 HEADERS  += KeyboardImageWindow.h \
-    KeyboardWindow.h \
     QImageLabel.h \
     GazeOverlay.h \
     GazeListener.h
 
-FORMS    += KeyboardImageWindow.ui \
-    KeyboardWindow.ui
+FORMS    += KeyboardImageWindow.ui
 
 OTHER_FILES += \
-    README.md
+    README.md \
+    RecordingLight.qml
+
+qmls.path   = $${OUT_PWD}
+qmls.files += $${OTHER_FILES}
+INSTALLS   += qmls
