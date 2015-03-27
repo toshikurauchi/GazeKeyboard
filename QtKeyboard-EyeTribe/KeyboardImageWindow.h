@@ -3,9 +3,11 @@
 
 #include <QMainWindow>
 #include <QQuickItem>
+#include <QMessageBox>
 
 #include "GazeOverlay.h"
 #include "GazeListener.h"
+#include "TrialManager.h"
 
 namespace Ui {
 class KeyboardImageWindow;
@@ -21,16 +23,23 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 private:
     Ui::KeyboardImageWindow *ui;
     GazeOverlay *gazeOverlay;
     GazeListener *gazeListener;
-    QString recordingsDir;
     QQuickItem *recLight;
+    QStringList words;
+    TrialManager *trialManager;
+    bool recording;
+    QMessageBox noParticipantMessageBox;
 
     void readSettings();
     void writeSettings();
+    void loadWordList();
+
+    static const QString REC_DIR;
 
 private slots:
     void toggleRecording();

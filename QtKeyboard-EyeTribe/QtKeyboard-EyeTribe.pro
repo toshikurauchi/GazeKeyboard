@@ -17,18 +17,21 @@ SOURCES += main.cpp\
     KeyboardImageWindow.cpp \
     QImageLabel.cpp \
     GazeOverlay.cpp \
-    GazeListener.cpp
+    GazeListener.cpp \
+    TrialManager.cpp
 
 HEADERS  += KeyboardImageWindow.h \
     QImageLabel.h \
     GazeOverlay.h \
-    GazeListener.h
+    GazeListener.h \
+    TrialManager.h
 
 FORMS    += KeyboardImageWindow.ui
 
 OTHER_FILES += \
     README.md \
-    RecordingLight.qml
+    RecordingLight.qml \
+    words.txt
 
 qmls.path   = $${OUT_PWD}
 qmls.files += $${OTHER_FILES}

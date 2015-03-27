@@ -24,11 +24,62 @@
     <item>
      <layout class="QHBoxLayout" name="infoBar">
       <item>
-       <widget class="QPushButton" name="recordButton">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Record</string>
+         <string>Participant:</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="participantEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Word:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="wordsCombo">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Trials</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="trialsSpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Current trial:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="currentTrialSpinBox"/>
       </item>
       <item>
        <spacer name="horizontalSpacer">
