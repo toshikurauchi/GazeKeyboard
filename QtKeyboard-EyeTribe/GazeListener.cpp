@@ -58,7 +58,7 @@ void GazeListener::on_gaze_data(gtl::GazeData const & gaze_data)
         float rawY = (float) (raw.y() - imgPos.y())/imgPos.height();
         float avgX = (float) (avg.x() - imgPos.x())/imgPos.width();
         float avgY = (float) (avg.y() - imgPos.y())/imgPos.height();
-        if (file)
+        if (out_stream)
         {
             *out_stream << gaze_data.time << "," << rawX << "," << rawY << "," <<  avgX << "," << avgY << "," << gaze_data.fix << "\n";
         }
