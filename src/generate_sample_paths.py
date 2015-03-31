@@ -1,6 +1,7 @@
 import csv
 from path import Path
 
+
 if __name__ =='__main__':
 	with open('ideal_path.csv', 'rb') as csvfile:
 		#read .csv file containing words and their corresponding ideal fixations
