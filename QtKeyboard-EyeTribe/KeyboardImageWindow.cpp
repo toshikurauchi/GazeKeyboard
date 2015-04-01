@@ -37,7 +37,7 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     // Load settings
     readSettings();
     // Load keyboard image
-    QPixmap pixmap("../src/Keyboard2b.png");
+    QPixmap pixmap("../src/Keyboard-phone.jpg");
     ui->imageLabel->setPixmap(pixmap);
     gazeOverlay = new GazeOverlay(ui->imageLabel, 10);
     gazeListener = new GazeListener(this, gazeOverlay);
@@ -52,6 +52,7 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     // Connect signals
     connect(ui->imageLabel, SIGNAL(rescaled(QSize, QRect)), gazeOverlay, SLOT(imageRescaled(QSize, QRect)));
     connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
+    connect(ui->changeLayoutButton, SIGNAL(clicked()), this, SLOT(changeLayout()));
 }
 
 KeyboardImageWindow::~KeyboardImageWindow()
@@ -127,5 +128,17 @@ void KeyboardImageWindow::toggleRecording()
             recLight->setProperty("recording", true);
             recording = true;
         }
+    }
+}
+
+void KeyboardImageWindow::changeLayout()
+{
+    QString filename = QFileDialog::getOpenFileName(this, "Open layout");
+    if (!filename.isEmpty())
+    {
+        QPixmap pixmap(filename);
+        ui->imageLabel->setPixmap(pixmap);
+        ui->imageLabel->repaint();
+        gazeOverlay->repaint();
     }
 }

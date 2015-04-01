@@ -51,8 +51,11 @@ if __name__ == "__main__":
     from keyboard import PrintedKeyboard
 
     if len(sys.argv) < 2:
-        print "USAGE: python %s GAZE_DATA_FILE.csv"%sys.argv[0]
+        print "USAGE: python %s GAZE_DATA_FILE.csv [KEYBOARD_ID]"%sys.argv[0]
         sys.exit()
+    keyboard_id = 0
+    if len(sys.argv) > 2:
+        keyboard_id = int(sys.argv[2])
 
     # Define colors
     raw_color = (255, 0, 0)
@@ -75,8 +78,13 @@ if __name__ == "__main__":
                 data.append(gd)
 
     # Denormalize coordinates
-    keyboard = PrintedKeyboard()
-    kb_orig = keyboard.image()
+    keyboard_src = "Keyboard2a.png"
+    if keyboard_id == 1:
+        keyboard_src = "Keyboard-circ.jpg"
+    if keyboard_id == 2:
+        keyboard_src = "Keyboard-phone-rot.jpg"
+    
+    kb_orig = cv2.imread(keyboard_src)
     kb_img = kb_orig.copy()
     h, w = kb_img.shape[0:2]
     for d in data:

@@ -43,6 +43,7 @@ private:
 
 private slots:
     void toggleRecording();
+    void changeLayout();
 };
 
 #endif // KEYBOARDIMAGEWINDOW_H
