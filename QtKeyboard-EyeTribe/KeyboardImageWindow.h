@@ -30,7 +30,6 @@ private:
     Ui::KeyboardImageWindow *ui;
     GazeOverlay *gazeOverlay;
     GazeListener *gazeListener;
-    QQuickItem *recLight;
     QStringList words;
     TrialManager *trialManager;
     bool recording;

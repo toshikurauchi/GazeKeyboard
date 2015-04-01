@@ -19,17 +19,6 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
 
-    // Create recording light
-    QQuickView *view = new QQuickView();
-    view->setOpacity(0);
-    view->setColor(palette().color(QPalette::Background));
-    QWidget *container = QWidget::createWindowContainer(view, this);
-    view->setSource(QUrl::fromLocalFile("RecordingLight.qml"));
-    recLight = view->rootObject();
-    ui->infoBar->insertWidget(0, container);
-    container->setMinimumSize(recLight->property("width").toInt(), recLight->property("height").toInt());
-    recLight->setProperty("recording", recording);
-
     // Setup message box (to show up when no participant id was set)
     noParticipantMessageBox.setText("You must type a participant ID to start recording");
 
@@ -130,7 +119,7 @@ void KeyboardImageWindow::toggleRecording()
     if (recording)
     {
         gazeListener->stopRecording();
-        recLight->setProperty("recording", false);
+        ui->recordingLight->setRecording(false);
         trialManager->updateTrial();
         recording = false;
     }
@@ -144,7 +133,7 @@ void KeyboardImageWindow::toggleRecording()
         else
         {
             gazeListener->startRecording(filename);
-            recLight->setProperty("recording", true);
+            ui->recordingLight->setRecording(true);
             recording = true;
         }
     }
