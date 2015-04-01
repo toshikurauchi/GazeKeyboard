@@ -31,6 +31,7 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     // Load words in combobox
     loadWordList();
     ui->wordsCombo->addItems(words);
+    ui->recordingLight->setWord(ui->wordsCombo->currentText());
 
     // Load layouts in combobox
     createLayoutsList();
@@ -49,6 +50,7 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     connect(ui->imageLabel, SIGNAL(rescaled(QSize, QRect)), gazeOverlay, SLOT(imageRescaled(QSize, QRect)));
     connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
     connect(ui->layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLayout(int)));
+    connect(ui->wordsCombo, SIGNAL(currentTextChanged(QString)), ui->recordingLight, SLOT(setWord(QString)));
 }
 
 KeyboardImageWindow::~KeyboardImageWindow()

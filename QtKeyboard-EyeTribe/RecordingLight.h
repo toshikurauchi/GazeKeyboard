@@ -9,7 +9,9 @@ class RecordingLight : public QWidget
 public:
     explicit RecordingLight(QWidget *parent = 0);
     void setRecording(bool recording);
-    bool isRecording();
+
+public slots:
+    void setWord(QString word);
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -19,6 +21,7 @@ private:
     int paddingX;
     int paddingY;
     int radius;
+    QString word;
 };
 
 #endif // RECORDINGLIGHT_H

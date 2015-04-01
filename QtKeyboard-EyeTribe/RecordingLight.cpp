@@ -16,9 +16,10 @@ void RecordingLight::setRecording(bool recording)
     update();
 }
 
-bool RecordingLight::isRecording()
+void RecordingLight::setWord(QString word)
 {
-    return recording;
+    this->word = word;
+    update();
 }
 
 void RecordingLight::paintEvent(QPaintEvent *event)
@@ -32,4 +33,14 @@ void RecordingLight::paintEvent(QPaintEvent *event)
     if (recording) color = QColor(255, 0, 0);
     painter.setBrush(QBrush(color));
     painter.drawRoundedRect(paddingX, paddingY, width()-2*paddingX, height()-2*paddingY, radius, radius);
+    if (!recording)
+    {
+        painter.setPen(QColor(255, 255, 255));
+        QFont font;
+        font.setPixelSize(height()-2*(paddingY+radius));
+        painter.setFont(font);
+        QRectF rect(paddingX+radius, paddingY+radius,
+                      width()-2*(paddingX+radius), height()-2*(paddingY+radius));
+        painter.drawText(rect, Qt::AlignCenter, word.toUpper());
+    }
 }
