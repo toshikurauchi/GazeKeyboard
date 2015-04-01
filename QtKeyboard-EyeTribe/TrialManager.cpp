@@ -7,15 +7,17 @@ const int TrialManager::MAX_TRIALS = 100;
 
 TrialManager::TrialManager(QObject *parent, QLineEdit *participantEdit,
                            QComboBox *wordsCombo, QSpinBox *trialsSpinBox,
-                           QSpinBox *currentTrialSpinBox, QString dataDirectory) :
-    QObject(parent), participantEdit(participantEdit), wordsCombo(wordsCombo),
-    trialsSpinBox(trialsSpinBox), currentTrialSpinBox(currentTrialSpinBox), dataDir(dataDirectory)
+                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo, QString dataDirectory) :
+    QObject(parent), participantEdit(participantEdit), wordsCombo(wordsCombo), trialsSpinBox(trialsSpinBox),
+    currentTrialSpinBox(currentTrialSpinBox), layoutsCombo(layoutsCombo), dataDir(dataDirectory)
 {
-    connect(participantEdit, SIGNAL(textChanged(QString)), this, SLOT(updateTrial()));
+    connect(participantEdit, SIGNAL(textChanged(QString)), this, SLOT(updateDir()));
     connect(wordsCombo, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateTrialForWord(QString)));
     connect(trialsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTrial()));
+    connect(layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateDir()));
 
     if (!dataDir.exists()) QDir().mkpath(dataDirectory);
+    updateDir();
     updateTrial();
 }
 
@@ -26,24 +28,15 @@ QString TrialManager::currentFile()
     {
         return "";
     }
-    QDir participantDir(dataDir.absoluteFilePath(participant));
-    if (!participantDir.exists()) QDir().mkpath(participantDir.absolutePath());
+    if (!currentDir.exists()) QDir().mkpath(currentDir.absolutePath());
     QString filename = wordsCombo->currentText() +
             QString::number(currentTrialSpinBox->value()) + ".csv";
-    return participantDir.absoluteFilePath(filename);
+    return currentDir.absoluteFilePath(filename);
 }
 
 void TrialManager::updateTrial()
 {
-    QString participant = participantEdit->text();
-    if (participant.isEmpty())
-    {
-        currentTrialSpinBox->setValue(1);
-        return;
-    }
-
-    QDir participantDir(dataDir.absoluteFilePath(participant));
-    if (participantDir.exists())
+    if (currentDir.exists())
     {
         int trials = trialsSpinBox->value();
         for (int i = 0; i < wordsCombo->count(); i++)
@@ -57,6 +50,7 @@ void TrialManager::updateTrial()
                 return;
             }
         }
+        updateTrialForWord(wordsCombo->currentText());
     }
     else
     {
@@ -70,6 +64,21 @@ void TrialManager::updateTrialForWord(QString word)
     currentTrialSpinBox->setValue(trialForWord(word));
 }
 
+void TrialManager::updateDir()
+{
+    QString participant = participantEdit->text();
+    if (participant.isEmpty())
+    {
+        currentDir = QDir();
+    }
+    else
+    {
+        currentDir = QDir(dataDir.absoluteFilePath(participant));
+        currentDir = QDir(currentDir.absoluteFilePath(currentLayout()->name()));
+    }
+    updateTrial();
+}
+
 int TrialManager::trialForWord(QString word)
 {
     QString participant = participantEdit->text();
@@ -78,23 +87,23 @@ int TrialManager::trialForWord(QString word)
         return 1;
     }
 
-    QDir participantDir(dataDir.absoluteFilePath(participant));
-    if (participantDir.exists())
+    if (currentDir.exists())
     {
-        QStringList nameFilter;
-        nameFilter << "*.csv";
-        QStringList recordings = participantDir.entryList(nameFilter);
         for (int trial = 1; trial <= MAX_TRIALS; trial++)
         {
-            if (!recordings.contains(word + QString::number(trial) + ".csv"))
+            QString filename = word + QString::number(trial) + ".csv";
+            QFile trialFile(currentDir.absoluteFilePath(filename));
+            if (!trialFile.exists())
             {
                 return trial;
             }
         }
         return MAX_TRIALS;
     }
-    else
-    {
-        return 1;
-    }
+    return 1;
+}
+
+KeyboardLayout *TrialManager::currentLayout()
+{
+    return qvariant_cast<KeyboardLayout *>(layoutsCombo->currentData());
 }

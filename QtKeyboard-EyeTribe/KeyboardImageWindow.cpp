@@ -24,7 +24,6 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     view->setOpacity(0);
     view->setColor(palette().color(QPalette::Background));
     QWidget *container = QWidget::createWindowContainer(view, this);
-    container->setStyleSheet("background-color:black;");
     view->setSource(QUrl::fromLocalFile("RecordingLight.qml"));
     recLight = view->rootObject();
     ui->infoBar->insertWidget(0, container);
@@ -53,7 +52,9 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     changeLayout(ui->layoutsCombo->currentIndex());
 
     // Create trial manager
-    trialManager = new TrialManager(this, ui->participantEdit, ui->wordsCombo, ui->trialsSpinBox, ui->currentTrialSpinBox, REC_DIR);
+    trialManager = new TrialManager(this, ui->participantEdit, ui->wordsCombo,
+                                    ui->trialsSpinBox, ui->currentTrialSpinBox,
+                                    ui->layoutsCombo, REC_DIR);
 
     // Connect signals
     connect(ui->imageLabel, SIGNAL(rescaled(QSize, QRect)), gazeOverlay, SLOT(imageRescaled(QSize, QRect)));

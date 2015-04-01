@@ -79,7 +79,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="currentTrialSpinBox"/>
+       <widget class="QSpinBox" name="currentTrialSpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QComboBox" name="layoutsCombo">
