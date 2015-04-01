@@ -18,19 +18,22 @@ SOURCES += main.cpp\
     QImageLabel.cpp \
     GazeOverlay.cpp \
     GazeListener.cpp \
-    TrialManager.cpp
+    TrialManager.cpp \
+    KeyboardLayout.cpp \
+    RecordingLight.cpp
 
 HEADERS  += KeyboardImageWindow.h \
     QImageLabel.h \
     GazeOverlay.h \
     GazeListener.h \
-    TrialManager.h
+    TrialManager.h \
+    KeyboardLayout.h \
+    RecordingLight.h
 
 FORMS    += KeyboardImageWindow.ui
 
 OTHER_FILES += \
     README.md \
-    RecordingLight.qml \
     words.txt
 
 qmls.path   = $${OUT_PWD}

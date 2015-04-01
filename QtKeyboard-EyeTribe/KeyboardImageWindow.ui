@@ -16,6 +16,9 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::NoFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -37,6 +40,9 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::WheelFocus</enum>
         </property>
        </widget>
       </item>
@@ -79,7 +85,21 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="currentTrialSpinBox"/>
+       <widget class="QSpinBox" name="currentTrialSpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="layoutsCombo">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
       </item>
       <item>
        <spacer name="horizontalSpacer">
@@ -95,6 +115,19 @@
        </spacer>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="RecordingLight" name="recordingLight" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::WheelFocus</enum>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QImageLabel" name="imageLabel" native="true">
@@ -142,7 +175,21 @@
    <header>QImageLabel.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>RecordingLight</class>
+   <extends>QWidget</extends>
+   <header>RecordingLight.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>recordingLight</tabstop>
+  <tabstop>participantEdit</tabstop>
+  <tabstop>wordsCombo</tabstop>
+  <tabstop>trialsSpinBox</tabstop>
+  <tabstop>currentTrialSpinBox</tabstop>
+  <tabstop>layoutsCombo</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

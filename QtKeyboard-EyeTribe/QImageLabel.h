@@ -27,6 +27,8 @@ private:
     QPixmap scaledPix;
     QPoint origin;
     QRect imgPos;
+
+    void initScaledPixmap(QSize frameSize);
 };
 
 #endif // QIMAGELABEL_H

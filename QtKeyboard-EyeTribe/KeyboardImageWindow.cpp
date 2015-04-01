@@ -19,26 +19,12 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);
 
-    // Create recording light
-    QQuickView *view = new QQuickView();
-    view->setOpacity(0);
-    view->setColor(palette().color(QPalette::Background));
-    QWidget *container = QWidget::createWindowContainer(view, this);
-    container->setStyleSheet("background-color:black;");
-    view->setSource(QUrl::fromLocalFile("RecordingLight.qml"));
-    recLight = view->rootObject();
-    ui->infoBar->insertWidget(0, container);
-    container->setMinimumSize(recLight->property("width").toInt(), recLight->property("height").toInt());
-    recLight->setProperty("recording", recording);
-
     // Setup message box (to show up when no participant id was set)
     noParticipantMessageBox.setText("You must type a participant ID to start recording");
 
     // Load settings
     readSettings();
-    // Load keyboard image
-    QPixmap pixmap("../src/Keyboard2b.png");
-    ui->imageLabel->setPixmap(pixmap);
+    // Create gaze overlay and listener
     gazeOverlay = new GazeOverlay(ui->imageLabel, 10);
     gazeListener = new GazeListener(this, gazeOverlay);
 
@@ -46,12 +32,23 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     loadWordList();
     ui->wordsCombo->addItems(words);
 
+    // Load layouts in combobox
+    createLayoutsList();
+    foreach (KeyboardLayout *layout, layouts)
+    {
+        ui->layoutsCombo->addItem(layout->name(), qVariantFromValue(layout));
+    }
+    changeLayout(ui->layoutsCombo->currentIndex());
+
     // Create trial manager
-    trialManager = new TrialManager(this, ui->participantEdit, ui->wordsCombo, ui->trialsSpinBox, ui->currentTrialSpinBox, REC_DIR);
+    trialManager = new TrialManager(this, ui->participantEdit, ui->wordsCombo,
+                                    ui->trialsSpinBox, ui->currentTrialSpinBox,
+                                    ui->layoutsCombo, REC_DIR);
 
     // Connect signals
     connect(ui->imageLabel, SIGNAL(rescaled(QSize, QRect)), gazeOverlay, SLOT(imageRescaled(QSize, QRect)));
     connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
+    connect(ui->layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLayout(int)));
 }
 
 KeyboardImageWindow::~KeyboardImageWindow()
@@ -60,6 +57,10 @@ KeyboardImageWindow::~KeyboardImageWindow()
     delete gazeListener;
     delete gazeOverlay;
     delete trialManager;
+    foreach (KeyboardLayout *layout, layouts)
+    {
+        delete layout;
+    }
 }
 
 void KeyboardImageWindow::closeEvent(QCloseEvent *event)
@@ -105,12 +106,20 @@ void KeyboardImageWindow::loadWordList()
     }
 }
 
+void KeyboardImageWindow::createLayoutsList()
+{
+    layouts.clear();
+    layouts.append(new KeyboardLayout("QWERTY", "../src/Keyboard2a.png"));
+    layouts.append(new KeyboardLayout("Phone", "../src/Keyboard-phone.jpg"));
+    layouts.append(new KeyboardLayout("Circ-AB", "../src/Keyboard-circ.jpg"));
+}
+
 void KeyboardImageWindow::toggleRecording()
 {
     if (recording)
     {
         gazeListener->stopRecording();
-        recLight->setProperty("recording", false);
+        ui->recordingLight->setRecording(false);
         trialManager->updateTrial();
         recording = false;
     }
@@ -124,8 +133,16 @@ void KeyboardImageWindow::toggleRecording()
         else
         {
             gazeListener->startRecording(filename);
-            recLight->setProperty("recording", true);
+            ui->recordingLight->setRecording(true);
             recording = true;
         }
     }
+}
+
+void KeyboardImageWindow::changeLayout(int layoutIdx)
+{
+    KeyboardLayout *layout = qvariant_cast<KeyboardLayout *>(ui->layoutsCombo->itemData(layoutIdx));
+    QPixmap pixmap(layout->filename());
+    ui->imageLabel->setPixmap(pixmap);
+    ui->imageLabel->update();
 }
