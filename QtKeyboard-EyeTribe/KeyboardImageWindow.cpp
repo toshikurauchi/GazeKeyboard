@@ -36,9 +36,7 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
 
     // Load settings
     readSettings();
-    // Load keyboard image
-    QPixmap pixmap("../src/Keyboard-phone.jpg");
-    ui->imageLabel->setPixmap(pixmap);
+    // Create gaze overlay and listener
     gazeOverlay = new GazeOverlay(ui->imageLabel, 10);
     gazeListener = new GazeListener(this, gazeOverlay);
 
@@ -46,13 +44,21 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     loadWordList();
     ui->wordsCombo->addItems(words);
 
+    // Load layouts in combobox
+    createLayoutsList();
+    foreach (KeyboardLayout *layout, layouts)
+    {
+        ui->layoutsCombo->addItem(layout->name(), qVariantFromValue(layout));
+    }
+    changeLayout(ui->layoutsCombo->currentIndex());
+
     // Create trial manager
     trialManager = new TrialManager(this, ui->participantEdit, ui->wordsCombo, ui->trialsSpinBox, ui->currentTrialSpinBox, REC_DIR);
 
     // Connect signals
     connect(ui->imageLabel, SIGNAL(rescaled(QSize, QRect)), gazeOverlay, SLOT(imageRescaled(QSize, QRect)));
     connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
-    connect(ui->changeLayoutButton, SIGNAL(clicked()), this, SLOT(changeLayout()));
+    connect(ui->layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLayout(int)));
 }
 
 KeyboardImageWindow::~KeyboardImageWindow()
@@ -61,6 +67,10 @@ KeyboardImageWindow::~KeyboardImageWindow()
     delete gazeListener;
     delete gazeOverlay;
     delete trialManager;
+    foreach (KeyboardLayout *layout, layouts)
+    {
+        delete layout;
+    }
 }
 
 void KeyboardImageWindow::closeEvent(QCloseEvent *event)
@@ -106,6 +116,14 @@ void KeyboardImageWindow::loadWordList()
     }
 }
 
+void KeyboardImageWindow::createLayoutsList()
+{
+    layouts.clear();
+    layouts.append(new KeyboardLayout("QWERTY", "../src/Keyboard2a.png"));
+    layouts.append(new KeyboardLayout("Phone", "../src/Keyboard-phone.jpg"));
+    layouts.append(new KeyboardLayout("Circ-AB", "../src/Keyboard-circ.jpg"));
+}
+
 void KeyboardImageWindow::toggleRecording()
 {
     if (recording)
@@ -131,14 +149,10 @@ void KeyboardImageWindow::toggleRecording()
     }
 }
 
-void KeyboardImageWindow::changeLayout()
+void KeyboardImageWindow::changeLayout(int layoutIdx)
 {
-    QString filename = QFileDialog::getOpenFileName(this, "Open layout");
-    if (!filename.isEmpty())
-    {
-        QPixmap pixmap(filename);
-        ui->imageLabel->setPixmap(pixmap);
-        ui->imageLabel->repaint();
-        gazeOverlay->repaint();
-    }
+    KeyboardLayout *layout = qvariant_cast<KeyboardLayout *>(ui->layoutsCombo->itemData(layoutIdx));
+    QPixmap pixmap(layout->filename());
+    ui->imageLabel->setPixmap(pixmap);
+    ui->imageLabel->update();
 }

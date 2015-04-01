@@ -9,7 +9,8 @@ QImageLabel::QImageLabel(QWidget *parent) :
 {
 }
 
-void QImageLabel::paintEvent(QPaintEvent *event) {
+void QImageLabel::paintEvent(QPaintEvent *event)
+{
     QWidget::paintEvent(event);
 
     if (pix.isNull())
@@ -23,8 +24,29 @@ void QImageLabel::paintEvent(QPaintEvent *event) {
 
 void QImageLabel::resizeEvent(QResizeEvent *event)
 {
+    initScaledPixmap(event->size());
+}
+
+const QPixmap* QImageLabel::pixmap() const
+{
+    return &pix;
+}
+
+QRect QImageLabel::imagePos()
+{
+    return imgPos;
+}
+
+void QImageLabel::setPixmap (const QPixmap &pixmap)
+{
+    pix = pixmap;
+    initScaledPixmap(size());
+}
+
+void QImageLabel::initScaledPixmap(QSize frameSize)
+{
     QSize pixSize = pix.size();
-    pixSize.scale(event->size(), Qt::KeepAspectRatio);
+    pixSize.scale(frameSize, Qt::KeepAspectRatio);
     scaledPix = pix.scaled(pixSize,
                            Qt::KeepAspectRatio,
                            Qt::SmoothTransformation
@@ -32,17 +54,5 @@ void QImageLabel::resizeEvent(QResizeEvent *event)
     origin.setX((width() - scaledPix.width())/2);
     origin.setY((height() - scaledPix.height())/2);
     imgPos = QRect(origin, scaledPix.size());
-    emit rescaled(event->size(), imgPos);
-}
-
-const QPixmap* QImageLabel::pixmap() const {
-    return &pix;
-}
-
-QRect QImageLabel::imagePos() {
-    return imgPos;
-}
-
-void QImageLabel::setPixmap (const QPixmap &pixmap){
-    pix = pixmap;
+    emit rescaled(frameSize, imgPos);
 }

@@ -18,13 +18,15 @@ SOURCES += main.cpp\
     QImageLabel.cpp \
     GazeOverlay.cpp \
     GazeListener.cpp \
-    TrialManager.cpp
+    TrialManager.cpp \
+    KeyboardLayout.cpp
 
 HEADERS  += KeyboardImageWindow.h \
     QImageLabel.h \
     GazeOverlay.h \
     GazeListener.h \
-    TrialManager.h
+    TrialManager.h \
+    KeyboardLayout.h
 
 FORMS    += KeyboardImageWindow.ui
 

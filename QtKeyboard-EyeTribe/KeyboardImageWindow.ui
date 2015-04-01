@@ -82,9 +82,12 @@
        <widget class="QSpinBox" name="currentTrialSpinBox"/>
       </item>
       <item>
-       <widget class="QPushButton" name="changeLayoutButton">
-        <property name="text">
-         <string>Change layout</string>
+       <widget class="QComboBox" name="layoutsCombo">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -121,7 +124,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

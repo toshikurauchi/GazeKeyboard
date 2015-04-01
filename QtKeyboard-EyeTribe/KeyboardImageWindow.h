@@ -8,6 +8,7 @@
 #include "GazeOverlay.h"
 #include "GazeListener.h"
 #include "TrialManager.h"
+#include "KeyboardLayout.h"
 
 namespace Ui {
 class KeyboardImageWindow;
@@ -34,16 +35,18 @@ private:
     TrialManager *trialManager;
     bool recording;
     QMessageBox noParticipantMessageBox;
+    QList<KeyboardLayout *> layouts;
 
     void readSettings();
     void writeSettings();
     void loadWordList();
+    void createLayoutsList();
 
     static const QString REC_DIR;
 
 private slots:
     void toggleRecording();
-    void changeLayout();
+    void changeLayout(int layoutIdx);
 };
 
 #endif // KEYBOARDIMAGEWINDOW_H
