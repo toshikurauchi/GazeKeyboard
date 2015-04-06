@@ -111,9 +111,11 @@ void KeyboardImageWindow::loadWordList()
 void KeyboardImageWindow::createLayoutsList()
 {
     layouts.clear();
-    layouts.append(new KeyboardLayout("QWERTY", "../src/Keyboard2a.png"));
-    layouts.append(new KeyboardLayout("Phone", "../src/Keyboard-phone.jpg"));
-    layouts.append(new KeyboardLayout("Circ-AB", "../src/Keyboard-circ.jpg"));
+    layouts.append(new KeyboardLayout("Double Ring", "../layout/DoubleRing.png"));
+    layouts.append(new KeyboardLayout("Phone", "../layout/Phone.png"));
+    layouts.append(new KeyboardLayout("QWERTY", "../layout/QWERTY.png"));
+    layouts.append(new KeyboardLayout("Single Ring", "../layout/SingleRing.png"));
+    layouts.append(new KeyboardLayout("Squared Phone", "../layout/SquaredPhone.png"));
 }
 
 void KeyboardImageWindow::toggleRecording()
