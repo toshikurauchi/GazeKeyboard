@@ -74,7 +74,7 @@ void TrialManager::updateDir()
     else
     {
         currentDir = QDir(dataDir.absoluteFilePath(participant));
-        currentDir = QDir(currentDir.absoluteFilePath(currentLayout()->name()));
+        currentDir = QDir(currentDir.absoluteFilePath(currentLayout()->name().simplified().replace(" ", "")));
     }
     updateTrial();
 }
