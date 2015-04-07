@@ -30,7 +30,6 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
 
     // Load words in combobox
     loadWordList();
-    ui->wordsCombo->addItems(words);
 
     // Load layouts in combobox
     createLayoutsList();
@@ -43,7 +42,7 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     // Create trial manager
     trialManager = new TrialManager(this, ui->participantEdit, ui->wordsCombo,
                                     ui->trialsSpinBox, ui->currentTrialSpinBox,
-                                    ui->layoutsCombo, REC_DIR);
+                                    ui->layoutsCombo, REC_DIR, words);
     ui->recordingLight->setWord(ui->wordsCombo->currentText());
 
     // Connect signals
@@ -102,7 +101,7 @@ void KeyboardImageWindow::loadWordList()
         while (!in.atEnd())
         {
             QString word = in.readLine();
-            if (!word.isEmpty()) words.append(word);
+            if (!word.isEmpty()) words.push_back(word.toStdString());
         }
         wordsFile.close();
     }
