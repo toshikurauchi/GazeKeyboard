@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QQuickItem>
 #include <QMessageBox>
+#include <vector>
 
 #include "GazeOverlay.h"
 #include "GazeListener.h"
@@ -30,7 +31,7 @@ private:
     Ui::KeyboardImageWindow *ui;
     GazeOverlay *gazeOverlay;
     GazeListener *gazeListener;
-    QStringList words;
+    std::vector<std::string> words;
     TrialManager *trialManager;
     bool recording;
     QMessageBox noParticipantMessageBox;

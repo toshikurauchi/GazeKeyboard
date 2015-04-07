@@ -1,5 +1,7 @@
 #include <QDir>
 #include <QDebug>
+#include <ctime>
+#include <algorithm>
 
 #include "TrialManager.h"
 
@@ -7,9 +9,10 @@ const int TrialManager::MAX_TRIALS = 100;
 
 TrialManager::TrialManager(QObject *parent, QLineEdit *participantEdit,
                            QComboBox *wordsCombo, QSpinBox *trialsSpinBox,
-                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo, QString dataDirectory) :
+                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo,
+                           QString dataDirectory, std::vector<std::string> words) :
     QObject(parent), participantEdit(participantEdit), wordsCombo(wordsCombo), trialsSpinBox(trialsSpinBox),
-    currentTrialSpinBox(currentTrialSpinBox), layoutsCombo(layoutsCombo), dataDir(dataDirectory)
+    currentTrialSpinBox(currentTrialSpinBox), layoutsCombo(layoutsCombo), dataDir(dataDirectory), words(words)
 {
     connect(participantEdit, SIGNAL(textChanged(QString)), this, SLOT(updateDir()));
     connect(wordsCombo, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateTrialForWord(QString)));
@@ -66,6 +69,15 @@ void TrialManager::updateTrialForWord(QString word)
 
 void TrialManager::updateDir()
 {
+    std::srand(unsigned(std::time(0)));
+    std::random_shuffle(words.begin(), words.end());
+    QStringList wordList;
+    for (std::vector<std::string>::iterator it = words.begin(); it != words.end(); it++)
+    {
+        wordList.append(QString(it->c_str()));
+    }
+    wordsCombo->clear();
+    wordsCombo->addItems(wordList);
     QString participant = participantEdit->text();
     if (participant.isEmpty())
     {

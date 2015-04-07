@@ -6,6 +6,7 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QDir>
+#include <vector>
 
 #include "KeyboardLayout.h"
 
@@ -16,7 +17,7 @@ public:
     explicit TrialManager(QObject *parent, QLineEdit *participantEdit,
                           QComboBox *wordsCombo, QSpinBox *trialsSpinBox,
                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo,
-                          QString dataDirectory);
+                          QString dataDirectory, std::vector<std::string> words);
     QString currentFile();
 
 public slots:
@@ -34,6 +35,7 @@ private:
     QComboBox *layoutsCombo;
     QDir dataDir;
     QDir currentDir;
+    std::vector<std::string> words;
 
     int trialForWord(QString word);
     KeyboardLayout *currentLayout();
