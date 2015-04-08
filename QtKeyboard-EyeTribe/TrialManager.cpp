@@ -9,15 +9,17 @@ const int TrialManager::MAX_TRIALS = 100;
 
 TrialManager::TrialManager(QObject *parent, QLineEdit *participantEdit,
                            QComboBox *wordsCombo, QSpinBox *trialsSpinBox,
-                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo,
+                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo, QCheckBox *useMouseCheck,
                            QString dataDirectory, std::vector<std::string> words) :
     QObject(parent), participantEdit(participantEdit), wordsCombo(wordsCombo), trialsSpinBox(trialsSpinBox),
-    currentTrialSpinBox(currentTrialSpinBox), layoutsCombo(layoutsCombo), dataDir(dataDirectory), words(words)
+    currentTrialSpinBox(currentTrialSpinBox), layoutsCombo(layoutsCombo), useMouseCheck(useMouseCheck),
+    dataDir(dataDirectory), words(words)
 {
     connect(participantEdit, SIGNAL(textChanged(QString)), this, SLOT(updateDir()));
     connect(wordsCombo, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateTrialForWord(QString)));
     connect(trialsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTrial()));
     connect(layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateDir()));
+    connect(useMouseCheck, SIGNAL(toggled(bool)), this, SLOT(updateDir()));
 
     if (!dataDir.exists()) QDir().mkpath(dataDirectory);
     updateDir();
@@ -86,6 +88,8 @@ void TrialManager::updateDir()
     else
     {
         currentDir = QDir(dataDir.absoluteFilePath(participant));
+        if (useMouseCheck->isChecked()) currentDir = QDir(currentDir.absoluteFilePath("mouse"));
+        else currentDir = QDir(currentDir.absoluteFilePath("gaze"));
         currentDir = QDir(currentDir.absoluteFilePath(currentLayout()->name().simplified().replace(" ", "")));
     }
     updateTrial();

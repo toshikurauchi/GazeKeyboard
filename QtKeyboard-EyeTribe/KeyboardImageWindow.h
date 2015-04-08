@@ -8,6 +8,7 @@
 
 #include "GazeOverlay.h"
 #include "GazeListener.h"
+#include "MouseListener.h"
 #include "TrialManager.h"
 #include "KeyboardLayout.h"
 
@@ -26,11 +27,13 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void mouseMoveEvent(QMouseEvent *mouseEvent);
 
 private:
     Ui::KeyboardImageWindow *ui;
     GazeOverlay *gazeOverlay;
     GazeListener *gazeListener;
+    MouseListener *mouseListener;
     std::vector<std::string> words;
     TrialManager *trialManager;
     bool recording;
@@ -47,6 +50,7 @@ private:
 private slots:
     void toggleRecording();
     void changeLayout(int layoutIdx);
+    void useMouseToggled(bool useMouse);
 };
 
 #endif // KEYBOARDIMAGEWINDOW_H

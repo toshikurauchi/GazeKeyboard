@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QSpinBox>
 #include <QDir>
 #include <vector>
@@ -17,7 +18,7 @@ public:
     explicit TrialManager(QObject *parent, QLineEdit *participantEdit,
                           QComboBox *wordsCombo, QSpinBox *trialsSpinBox,
                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo,
-                          QString dataDirectory, std::vector<std::string> words);
+                          QCheckBox *useMouseCheck, QString dataDirectory, std::vector<std::string> words);
     QString currentFile();
 
 public slots:
@@ -33,6 +34,7 @@ private:
     QSpinBox *trialsSpinBox;
     QSpinBox *currentTrialSpinBox;
     QComboBox *layoutsCombo;
+    QCheckBox *useMouseCheck;
     QDir dataDir;
     QDir currentDir;
     std::vector<std::string> words;

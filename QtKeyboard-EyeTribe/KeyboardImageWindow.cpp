@@ -4,9 +4,11 @@
 #include <QSettings>
 #include <QQuickView>
 #include <QQmlProperty>
+#include <QMouseEvent>
 
 #include "KeyboardImageWindow.h"
 #include "ui_KeyboardImageWindow.h"
+#include "IDataRecorder.h"
 
 const QString KeyboardImageWindow::REC_DIR = "../data/recordings/";
 
@@ -27,6 +29,13 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     // Create gaze overlay and listener
     gazeOverlay = new GazeOverlay(ui->imageLabel, 10);
     gazeListener = new GazeListener(this, gazeOverlay);
+    mouseListener = new MouseListener(this, gazeOverlay);
+
+    // Set mouse movement tracking to true
+    centralWidget()->setMouseTracking(true);
+    gazeOverlay->setMouseTracking(true);
+    ui->imageLabel->setMouseTracking(true);
+    setMouseTracking(true);
 
     // Load words in combobox
     loadWordList();
@@ -42,14 +51,15 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     // Create trial manager
     trialManager = new TrialManager(this, ui->participantEdit, ui->wordsCombo,
                                     ui->trialsSpinBox, ui->currentTrialSpinBox,
-                                    ui->layoutsCombo, REC_DIR, words);
+                                    ui->layoutsCombo, ui->useMouseCheck, REC_DIR, words);
     ui->recordingLight->setWord(ui->wordsCombo->currentText());
 
     // Connect signals
     connect(ui->imageLabel, SIGNAL(rescaled(QSize, QRect)), gazeOverlay, SLOT(imageRescaled(QSize, QRect)));
-    connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
     connect(ui->layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLayout(int)));
     connect(ui->wordsCombo, SIGNAL(currentTextChanged(QString)), ui->recordingLight, SLOT(setWord(QString)));
+    connect(ui->useMouseCheck, SIGNAL(toggled(bool)), this, SLOT(useMouseToggled(bool)));
+    useMouseToggled(ui->useMouseCheck->isChecked());
 }
 
 KeyboardImageWindow::~KeyboardImageWindow()
@@ -77,6 +87,12 @@ void KeyboardImageWindow::keyPressEvent(QKeyEvent *event)
         toggleRecording();
     }
 }
+
+void KeyboardImageWindow::mouseMoveEvent(QMouseEvent *mouseEvent)
+{
+    mouseListener->mouseMoved(mapToGlobal(mouseEvent->pos()));
+}
+
 
 void KeyboardImageWindow::readSettings()
 {
@@ -118,9 +134,12 @@ void KeyboardImageWindow::createLayoutsList()
 
 void KeyboardImageWindow::toggleRecording()
 {
+    IDataRecorder *currentRecorder;
+    if (ui->useMouseCheck->isChecked()) currentRecorder = mouseListener;
+    else currentRecorder = gazeListener;
     if (recording)
     {
-        gazeListener->stopRecording();
+        currentRecorder->stopRecording();
         ui->recordingLight->setRecording(false);
         trialManager->updateTrial();
         recording = false;
@@ -134,7 +153,7 @@ void KeyboardImageWindow::toggleRecording()
         }
         else
         {
-            gazeListener->startRecording(filename);
+            currentRecorder->startRecording(filename);
             ui->recordingLight->setRecording(true);
             recording = true;
         }
@@ -147,4 +166,22 @@ void KeyboardImageWindow::changeLayout(int layoutIdx)
     QPixmap pixmap(layout->filename());
     ui->imageLabel->setPixmap(pixmap);
     ui->imageLabel->update();
+}
+
+void KeyboardImageWindow::useMouseToggled(bool useMouse)
+{
+    IDataRecorder *prevRecorder;
+    if (useMouse)
+    {
+        prevRecorder = gazeListener;
+        disconnect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
+        connect(mouseListener, SIGNAL(newMousePos(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
+    }
+    else
+    {
+        prevRecorder = mouseListener;
+        disconnect(mouseListener, SIGNAL(newMousePos(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
+        connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
+    }
+    if (prevRecorder->isRecording()) prevRecorder->stopRecording();
 }

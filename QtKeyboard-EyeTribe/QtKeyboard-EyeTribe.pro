@@ -17,10 +17,11 @@ SOURCES += main.cpp\
     KeyboardImageWindow.cpp \
     QImageLabel.cpp \
     GazeOverlay.cpp \
-    GazeListener.cpp \
     TrialManager.cpp \
     KeyboardLayout.cpp \
-    RecordingLight.cpp
+    RecordingLight.cpp \
+    MouseListener.cpp \
+    GazeListener.cpp
 
 HEADERS  += KeyboardImageWindow.h \
     QImageLabel.h \
@@ -28,7 +29,9 @@ HEADERS  += KeyboardImageWindow.h \
     GazeListener.h \
     TrialManager.h \
     KeyboardLayout.h \
-    RecordingLight.h
+    RecordingLight.h \
+    MouseListener.h \
+    IDataRecorder.h
 
 FORMS    += KeyboardImageWindow.ui
 

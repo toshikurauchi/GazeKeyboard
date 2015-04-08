@@ -18,7 +18,7 @@ GazeListener::~GazeListener()
 {
     m_api.remove_listener(*this);
     m_api.disconnect();
-    if (file)
+    if (isRecording())
     {
         stopRecording();
     }
@@ -41,6 +41,11 @@ void GazeListener::stopRecording()
     file = 0;
 }
 
+bool GazeListener::isRecording()
+{
+    return out_stream != 0;
+}
+
 void GazeListener::on_gaze_data(gtl::GazeData const & gaze_data)
 {
     if(gaze_data.state & gtl::GazeData::GD_STATE_TRACKING_GAZE)
@@ -58,7 +63,7 @@ void GazeListener::on_gaze_data(gtl::GazeData const & gaze_data)
         float rawY = (float) (raw.y() - imgPos.y())/imgPos.height();
         float avgX = (float) (avg.x() - imgPos.x())/imgPos.width();
         float avgY = (float) (avg.y() - imgPos.y())/imgPos.height();
-        if (out_stream)
+        if (isRecording())
         {
             *out_stream << gaze_data.time << "," << rawX << "," << rawY << "," <<  avgX << "," << avgY << "," << gaze_data.fix << "\n";
         }

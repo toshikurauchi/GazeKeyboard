@@ -6,8 +6,9 @@
 
 #include "tet-cpp-client/include/gazeapi.h"
 #include "GazeOverlay.h"
+#include "IDataRecorder.h"
 
-class GazeListener : public QObject, public gtl::IGazeListener
+class GazeListener : public QObject, public gtl::IGazeListener, public IDataRecorder
 {
     Q_OBJECT
 
@@ -16,6 +17,7 @@ public:
     ~GazeListener();
     void startRecording(QString filename);
     void stopRecording();
+    bool isRecording();
 
 signals:
     void newGaze(QPoint gaze);
