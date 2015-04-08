@@ -15,10 +15,14 @@ QRect GazeOverlay::imagePosition()
     return m_imgPos;
 }
 
+void GazeOverlay::setShow(bool show)
+{
+    this->show = show;
+}
+
 void GazeOverlay::newGaze(QPoint gaze)
 {
     m_gaze = gaze;
-    show = true;
 }
 
 void GazeOverlay::imageRescaled(QSize labelSize, QRect imgPos)

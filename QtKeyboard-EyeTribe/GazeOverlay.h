@@ -12,6 +12,7 @@ public:
     QRect imagePosition();
 
 protected slots:
+    void setShow(bool show);
     void newGaze(QPoint gaze);
     void imageRescaled(QSize labelSize, QRect m_imgPos);
 

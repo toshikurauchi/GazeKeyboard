@@ -30,8 +30,9 @@ void RecordingLight::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing);
 
     QColor color(100, 100, 100);
-    if (recording) color = QColor(255, 0, 0);
+    if (recording) color = QColor(240, 240, 240);
     painter.setBrush(QBrush(color));
+    painter.setPen(color);
     painter.drawRoundedRect(paddingX, paddingY, width()-2*paddingX, height()-2*paddingY, radius, radius);
     if (!recording)
     {

@@ -55,7 +55,7 @@ void GazeListener::on_gaze_data(gtl::GazeData const & gaze_data)
         // Get gaze position in keyboard image coordinates
         raw = m_gazeoverlay->mapFromGlobal(raw);
         avg = m_gazeoverlay->mapFromGlobal(avg);
-        emit newGaze(raw);
+        emit newGaze(avg);
 
         // Normalize coordinates
         QRect imgPos = m_gazeoverlay->imagePosition();
