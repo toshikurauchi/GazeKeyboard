@@ -10,6 +10,7 @@
 #include "GazeListener.h"
 #include "MouseListener.h"
 #include "TrialManager.h"
+#include "VisualizationManager.h"
 #include "KeyboardLayout.h"
 
 namespace Ui {
@@ -27,7 +28,6 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
     void keyPressEvent(QKeyEvent *event);
-    void mouseMoveEvent(QMouseEvent *mouseEvent);
 
 private:
     Ui::KeyboardImageWindow *ui;
@@ -36,6 +36,7 @@ private:
     MouseListener *mouseListener;
     std::vector<std::string> words;
     TrialManager *trialManager;
+    VisualizationManager *vizManager;
     bool recording;
     QMessageBox noParticipantMessageBox;
     QList<KeyboardLayout *> layouts;
@@ -49,8 +50,8 @@ private:
 
 private slots:
     void toggleRecording();
-    void changeLayout(int layoutIdx);
     void useMouseToggled(bool useMouse);
+    void loadVisualizations();
 };
 
 #endif // KEYBOARDIMAGEWINDOW_H

@@ -7,6 +7,7 @@
 QImageLabel::QImageLabel(QWidget *parent) :
     QWidget(parent)
 {
+    setMouseTracking(true);
 }
 
 void QImageLabel::paintEvent(QPaintEvent *event)
@@ -25,6 +26,11 @@ void QImageLabel::paintEvent(QPaintEvent *event)
 void QImageLabel::resizeEvent(QResizeEvent *event)
 {
     initScaledPixmap(event->size());
+}
+
+void QImageLabel::mouseMoveEvent(QMouseEvent *event)
+{
+    emit mouseMoved(mapToGlobal(event->pos()));
 }
 
 const QPixmap* QImageLabel::pixmap() const

@@ -9,17 +9,21 @@ const int TrialManager::MAX_TRIALS = 100;
 
 TrialManager::TrialManager(QObject *parent, QLineEdit *participantEdit,
                            QComboBox *wordsCombo, QSpinBox *trialsSpinBox,
-                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo, QCheckBox *useMouseCheck,
+                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo,
+                           QCheckBox *useMouseCheck, QImageLabel *imageLabel,
                            QString dataDirectory, std::vector<std::string> words) :
     QObject(parent), participantEdit(participantEdit), wordsCombo(wordsCombo), trialsSpinBox(trialsSpinBox),
     currentTrialSpinBox(currentTrialSpinBox), layoutsCombo(layoutsCombo), useMouseCheck(useMouseCheck),
-    dataDir(dataDirectory), words(words)
+    imageLabel(imageLabel), dataDir(dataDirectory), words(words)
 {
     connect(participantEdit, SIGNAL(textChanged(QString)), this, SLOT(updateDir()));
     connect(wordsCombo, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateTrialForWord(QString)));
     connect(trialsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTrial()));
     connect(layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateDir()));
     connect(useMouseCheck, SIGNAL(toggled(bool)), this, SLOT(updateDir()));
+
+    connect(layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLayout(int)));
+    changeLayout(layoutsCombo->currentIndex());
 
     if (!dataDir.exists()) QDir().mkpath(dataDirectory);
     updateDir();
@@ -90,9 +94,17 @@ void TrialManager::updateDir()
         currentDir = QDir(dataDir.absoluteFilePath(participant));
         if (useMouseCheck->isChecked()) currentDir = QDir(currentDir.absoluteFilePath("mouse"));
         else currentDir = QDir(currentDir.absoluteFilePath("gaze"));
-        currentDir = QDir(currentDir.absoluteFilePath(currentLayout()->name().simplified().replace(" ", "")));
+        currentDir = QDir(currentDir.absoluteFilePath(currentLayout()->trimmedName()));
     }
     updateTrial();
+}
+
+void TrialManager::changeLayout(int layoutIdx)
+{
+    KeyboardLayout *layout = qvariant_cast<KeyboardLayout *>(layoutsCombo->itemData(layoutIdx));
+    QPixmap pixmap(layout->filename());
+    imageLabel->setPixmap(pixmap);
+    imageLabel->update();
 }
 
 int TrialManager::trialForWord(QString word)

@@ -12,6 +12,7 @@ public:
     ~KeyboardLayout();
 
     QString name();
+    QString trimmedName();
     QString filename();
 
 private:

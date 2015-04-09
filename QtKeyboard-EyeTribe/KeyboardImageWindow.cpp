@@ -31,12 +31,6 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     gazeListener = new GazeListener(this, gazeOverlay);
     mouseListener = new MouseListener(this, gazeOverlay);
 
-    // Set mouse movement tracking to true
-    centralWidget()->setMouseTracking(true);
-    gazeOverlay->setMouseTracking(true);
-    ui->imageLabel->setMouseTracking(true);
-    setMouseTracking(true);
-
     // Load words in combobox
     loadWordList();
 
@@ -46,19 +40,27 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     {
         ui->layoutsCombo->addItem(layout->name(), qVariantFromValue(layout));
     }
-    changeLayout(ui->layoutsCombo->currentIndex());
 
     // Create trial manager
     trialManager = new TrialManager(this, ui->participantEdit, ui->wordsCombo,
                                     ui->trialsSpinBox, ui->currentTrialSpinBox,
-                                    ui->layoutsCombo, ui->useMouseCheck, REC_DIR, words);
+                                    ui->layoutsCombo, ui->useMouseCheck,
+                                    ui->imageLabel, REC_DIR, words);
     ui->recordingLight->setWord(ui->wordsCombo->currentText());
 
+    // Create visualization manager
+    vizManager = new VisualizationManager(this, ui->participantsComboViz, ui->modeComboViz,
+                                          ui->layoutsComboViz, ui->wordsComboViz, ui->trialComboViz,
+                                          ui->imageLabelViz, ui->showFixCheck, ui->fixRadSlider,
+                                          ui->fixThreshSlider, ui->lineWidthSlider, ui->opacitySlider,
+                                          ui->smoothVizCheck, REC_DIR, layouts);
+
     // Connect signals
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(loadVisualizations()));
     connect(ui->imageLabel, SIGNAL(rescaled(QSize, QRect)), gazeOverlay, SLOT(imageRescaled(QSize, QRect)));
-    connect(ui->layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLayout(int)));
     connect(ui->wordsCombo, SIGNAL(currentTextChanged(QString)), ui->recordingLight, SLOT(setWord(QString)));
     connect(ui->useMouseCheck, SIGNAL(toggled(bool)), this, SLOT(useMouseToggled(bool)));
+    connect(ui->imageLabel, SIGNAL(mouseMoved(QPoint)), mouseListener, SLOT(mouseMoved(QPoint)));
     useMouseToggled(ui->useMouseCheck->isChecked());
 }
 
@@ -66,8 +68,10 @@ KeyboardImageWindow::~KeyboardImageWindow()
 {
     delete ui;
     delete gazeListener;
+    delete mouseListener;
     delete gazeOverlay;
     delete trialManager;
+    delete vizManager;
     foreach (KeyboardLayout *layout, layouts)
     {
         delete layout;
@@ -87,12 +91,6 @@ void KeyboardImageWindow::keyPressEvent(QKeyEvent *event)
         toggleRecording();
     }
 }
-
-void KeyboardImageWindow::mouseMoveEvent(QMouseEvent *mouseEvent)
-{
-    mouseListener->mouseMoved(mapToGlobal(mouseEvent->pos()));
-}
-
 
 void KeyboardImageWindow::readSettings()
 {
@@ -160,14 +158,6 @@ void KeyboardImageWindow::toggleRecording()
     }
 }
 
-void KeyboardImageWindow::changeLayout(int layoutIdx)
-{
-    KeyboardLayout *layout = qvariant_cast<KeyboardLayout *>(ui->layoutsCombo->itemData(layoutIdx));
-    QPixmap pixmap(layout->filename());
-    ui->imageLabel->setPixmap(pixmap);
-    ui->imageLabel->update();
-}
-
 void KeyboardImageWindow::useMouseToggled(bool useMouse)
 {
     IDataRecorder *prevRecorder;
@@ -184,4 +174,12 @@ void KeyboardImageWindow::useMouseToggled(bool useMouse)
         connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
     }
     if (prevRecorder->isRecording()) prevRecorder->stopRecording();
+}
+
+void KeyboardImageWindow::loadVisualizations()
+{
+    if (ui->tabWidget->currentWidget() == ui->tabViz)
+    {
+        vizManager->loadVisualizations();
+    }
 }

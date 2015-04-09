@@ -8,6 +8,8 @@ GazeOverlay::GazeOverlay(QWidget *parent, int radius) :
 {
     connect(&timer, SIGNAL(timeout()), this, SLOT(repaint()));
     timer.start(17);
+    // We need this in case the layers below want to track the mouse position
+    setMouseTracking(true);
 }
 
 QRect GazeOverlay::imagePosition()

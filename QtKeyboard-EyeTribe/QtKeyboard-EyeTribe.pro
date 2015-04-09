@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     KeyboardLayout.cpp \
     RecordingLight.cpp \
     MouseListener.cpp \
-    GazeListener.cpp
+    GazeListener.cpp \
+    VisualizationManager.cpp \
+    ScanpathPlotter.cpp
 
 HEADERS  += KeyboardImageWindow.h \
     QImageLabel.h \
@@ -31,7 +33,9 @@ HEADERS  += KeyboardImageWindow.h \
     KeyboardLayout.h \
     RecordingLight.h \
     MouseListener.h \
-    IDataRecorder.h
+    IDataRecorder.h \
+    VisualizationManager.h \
+    ScanpathPlotter.h
 
 FORMS    += KeyboardImageWindow.ui
 

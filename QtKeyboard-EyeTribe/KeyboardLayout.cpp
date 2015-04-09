@@ -18,6 +18,11 @@ QString KeyboardLayout::name()
     return m_name;
 }
 
+QString KeyboardLayout::trimmedName()
+{
+    return m_name.simplified().replace(" ", "");
+}
+
 QString KeyboardLayout::filename()
 {
     return m_filename;

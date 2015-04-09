@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "KeyboardLayout.h"
+#include "QImageLabel.h"
 
 class TrialManager : public QObject
 {
@@ -18,7 +19,8 @@ public:
     explicit TrialManager(QObject *parent, QLineEdit *participantEdit,
                           QComboBox *wordsCombo, QSpinBox *trialsSpinBox,
                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo,
-                          QCheckBox *useMouseCheck, QString dataDirectory, std::vector<std::string> words);
+                          QCheckBox *useMouseCheck, QImageLabel *imageLabel,
+                          QString dataDirectory, std::vector<std::string> words);
     QString currentFile();
 
 public slots:
@@ -28,6 +30,9 @@ protected slots:
     void updateTrialForWord(QString word);
     void updateDir();
 
+private slots:
+    void changeLayout(int layoutIdx);
+
 private:
     QLineEdit *participantEdit;
     QComboBox *wordsCombo;
@@ -35,6 +40,7 @@ private:
     QSpinBox *currentTrialSpinBox;
     QComboBox *layoutsCombo;
     QCheckBox *useMouseCheck;
+    QImageLabel *imageLabel;
     QDir dataDir;
     QDir currentDir;
     std::vector<std::string> words;

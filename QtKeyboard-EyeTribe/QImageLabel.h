@@ -14,6 +14,7 @@ public:
 
 signals:
     void rescaled(QSize labelSize, QRect imgPos);
+    void mouseMoved(QPoint position);
 
 public slots:
     void setPixmap(const QPixmap&);
@@ -21,6 +22,7 @@ public slots:
 protected:
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
 private:
     QPixmap pix;
