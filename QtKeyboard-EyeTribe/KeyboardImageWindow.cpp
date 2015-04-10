@@ -61,7 +61,9 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     connect(ui->wordsCombo, SIGNAL(currentTextChanged(QString)), ui->recordingLight, SLOT(setWord(QString)));
     connect(ui->useMouseCheck, SIGNAL(toggled(bool)), this, SLOT(useMouseToggled(bool)));
     connect(ui->imageLabel, SIGNAL(mouseMoved(QPoint)), mouseListener, SLOT(mouseMoved(QPoint)));
+    connect(ui->showPointerCheck, SIGNAL(toggled(bool)), gazeOverlay, SLOT(setShow(bool)));
     useMouseToggled(ui->useMouseCheck->isChecked());
+    gazeOverlay->setShow(ui->showPointerCheck->isChecked());
 }
 
 KeyboardImageWindow::~KeyboardImageWindow()

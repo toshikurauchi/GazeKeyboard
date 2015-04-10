@@ -11,6 +11,9 @@ public:
     explicit GazeOverlay(QWidget *parent = 0, int radius = 10);
     QRect imagePosition();
 
+public slots:
+    void setShow(bool show);
+
 protected slots:
     void newGaze(QPoint gaze);
     void imageRescaled(QSize labelSize, QRect m_imgPos);

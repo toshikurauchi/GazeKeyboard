@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>877</width>
     <height>600</height>
    </rect>
   </property>
@@ -122,6 +122,16 @@
            <widget class="QCheckBox" name="useMouseCheck">
             <property name="text">
              <string>Use mouse</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="showPointerCheck">
+            <property name="text">
+             <string>Show pointer</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -436,7 +446,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>877</width>
      <height>18</height>
     </rect>
    </property>
