@@ -1,5 +1,7 @@
 import csv
 import abc
+import logging
+import re
 
 class Data(object):
     __metaclass__ = abc.ABCMeta
@@ -16,7 +18,7 @@ class Data(object):
         return
 
     def denorm_pos(self, size):
-        x, y = pos()
+        x, y = self.pos()
         w, h = size
         return (x*w, y*h)
 
@@ -51,7 +53,7 @@ class MouseData(Data):
         return self._pos
 
 def loadData(filename):
-    is_gaze = '/gaze/' in filename # is this safe enough?
+    is_gaze = re.search('[\\\/]gaze[\\\/]', filename) is not None
     data = []
     with open(filename) as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
@@ -73,7 +75,6 @@ def loadData(filename):
 
 if __name__=='__main__':
     import sys
-    import logging
 
     if len(sys.argv) < 2:
         logging.error('USAGE: python %s FILENAME'%sys.argv[0])
