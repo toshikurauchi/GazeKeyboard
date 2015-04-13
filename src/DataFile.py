@@ -1,8 +1,28 @@
 import csv
+import abc
 
-class GazeData(object):
-    def __init__(self, tstamp, raw, smooth, is_fix):
+class Data(object):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, tstamp):
         self._tstamp = tstamp
+
+    @property
+    def tstamp(self):
+        return self._tstamp
+
+    @abc.abstractmethod
+    def pos(self):
+        return
+
+    def denorm_pos(self, size):
+        x, y = pos()
+        w, h = size
+        return (x*w, y*h)
+
+class GazeData(Data):
+    def __init__(self, tstamp, raw, smooth, is_fix):
+        super(GazeData, self).__init__(tstamp)
         self._raw = raw
         self._smooth = smooth
         self._is_fix = is_fix
@@ -10,10 +30,6 @@ class GazeData(object):
     def __str__(self):
         return 'Gaze: %d, %s, %s, %s'%(self._tstamp, self._raw,
                                        self._smooth, self._is_fix)
-
-    @property
-    def tstamp(self):
-        return self._tstamp
 
     def pos(self, smooth=False):
         if smooth: return self._smooth
@@ -23,17 +39,13 @@ class GazeData(object):
     def is_fix(self):
         return self._is_fix
 
-class MouseData(object):
+class MouseData(Data):
     def __init__(self, tstamp, pos):
         self._tstamp = tstamp
         self._pos = pos
 
     def __str__(self):
         return 'Mouse: %d, %s'%(self._tstamp, self._pos)
-
-    @property
-    def tstamp(self):
-        return self._tstamp
 
     def pos(self, smooth=False):
         return self._pos
