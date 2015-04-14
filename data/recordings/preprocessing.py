@@ -1,54 +1,59 @@
 import os
 import csv
 
-size = 50;
+SIZE = 50;
+NAME = 'andrew';
+TYPE = 'gaze';
 
-def Test1(rootDir):
-    L = list();
+def process_data(root_dir):
+    print root_dir
+    results = list()
+
+    output_file = open(NAME + '_results_' + TYPE + '.csv', 'wb')
+    writer = csv.writer(output_file)
     
-    list_dirs = os.walk(rootDir)
+    list_dirs = os.walk(root_dir)
+
     for root, dirs, files in list_dirs:
-        for d in dirs:
-            print "############################################################"
-            print d
-            print "############################################################"
-            temp = list()
-            temp.append(d)
-            sub_dirs = os.walk(os.path.join(root, d))
-            for root1, dirs1, files1 in sub_dirs:
-                for f in files1:
-                    print os.path.join(root1, f)
-                    temp.append(calMT(os.path.join(root1, f)))
-            L.append(temp)
-            temp = []
-    print L;
+        if files == []:
+            writer.writerow([dirs[0], '', dirs[1], '', dirs[2], '', dirs[3]])
+            continue
+        
+        speed = []
+        start_time = []
+        for f in files:
+            if f == []:
+                continue
+            speed.append(cal_mmt(os.path.join(root, f))[1])
+            start_time.append(cal_mmt(os.path.join(root, f))[0])
+        results.append(start_time)
+        results.append(speed)
+        print results
 
-    results = open('results_mouse.csv', 'wb')
-    writer = csv.writer(results)
-    for i in range(0, size):        
-        writer.writerow([L[0][i], L[1][i], L[2][i], L[3][i]])
-    results.close()
+    for i in range(0, SIZE - 1):        
+        writer.writerow([results[0][i], results[1][i], results[2][i], results[3][i], results[4][i], results[5][i], results[6][i], results[7][i]])
+
+    output_file.close()
 
 
-def calMT(filename):
+def cal_mmt(filename):
+    count_letters = len(filename) - 5
     file = open(filename)
     heading = file.readline()
     try:
         data_0 = file.readline()
         fields = data_0.split(',')
         time_0 = fields[0]
-        print time_0
         data_t = file.readlines()[-1]
         fields = data_t.split(',')
         time_t = fields[0]
-        print time_t
     except IndexError:
-        return -1
+        return [-1, -1]
     file.close()
-    return int(time_t)-int(time_0)
+    return [time_0, (int(time_t)-int(time_0))/count_letters]
     
     
 
 
 
-Test1("D:/Git/GazeKeyboard/data/recordings/ajjen/mouse")
+process_data(os.path.join(os.getcwd(), NAME + '/' + TYPE))

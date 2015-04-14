@@ -8,7 +8,7 @@ from dictionary import Dictionary
 import os
 import csv
 
-def train(words_file, has_freq, limit):
+def train(words_file, has_freq=False, limit=float("inf")):
     dct = Dictionary()
     print 'Starting training'
     with open(words_file, 'rb') as f:
@@ -40,14 +40,13 @@ def add_freq(dct, freq_file):
                 dct.add(word, int(freq))
 
 def trained_dict():
-    dct = train('google-10000-english.txt', False, float('inf'))
-    add_freq(dct, 'count_1w.csv')
-    return dct
+    words_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),'top100.csv')
+    return train(words_file)
 
 if __name__=='__main__':
     import sys
 
-    words_file = 'words.txt'
+    words_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),'top100.csv')
     limit = float('inf')
     if len(sys.argv) > 1:
         words_file = sys.argv[1]
@@ -57,3 +56,4 @@ if __name__=='__main__':
     if words_file in ['wikipedia_wordfreq.csv', 'count_1w.csv']:
         has_freq = True
     dct = train(words_file, has_freq, limit)
+    print "Trained dictionary with %d words from %s"%(dct.root[dct._count],words_file)
