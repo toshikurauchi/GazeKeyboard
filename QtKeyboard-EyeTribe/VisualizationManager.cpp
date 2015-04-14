@@ -62,7 +62,7 @@ void VisualizationManager::loadVisualizations()
                     QStringList wordFiles = layoutDir.entryList(csvFilter);
                     foreach (QString wordFile, wordFiles)
                     {
-                        QRegularExpressionMatch match = QRegularExpression("(?<word>.*)(?<trial>[0-9]+).csv").match(wordFile);
+                        QRegularExpressionMatch match = QRegularExpression("[0-9]*(?<word>.*)(?<trial>[0-9]+).csv").match(wordFile);
                         QString word = match.captured("word");
                         QString trial = match.captured("trial");
                         QString path = layoutDir.absoluteFilePath(wordFile);

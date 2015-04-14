@@ -132,7 +132,8 @@ qint64 ScanpathPlotter::computeAverageFrameTime()
 ScanpathPlotter::Fixation ScanpathPlotter::computeFixation(QList<DenormalizedEntry> cluster, qint64 frameTime)
 {
     QPoint center = clusterCenter(cluster);
-    qint64 duration = cluster.last().timestamp - cluster.first().timestamp + frameTime;
+    qint64 duration = 0;
+    if (!cluster.isEmpty()) duration = cluster.last().timestamp - cluster.first().timestamp + frameTime;
     return Fixation(duration, center);
 }
 

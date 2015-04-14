@@ -6,6 +6,7 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QLabel>
 #include <QDir>
 #include <vector>
 
@@ -20,7 +21,8 @@ public:
                           QComboBox *wordsCombo, QSpinBox *trialsSpinBox,
                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo,
                           QCheckBox *useMouseCheck, QImageLabel *imageLabel,
-                          QString dataDirectory, std::vector<std::string> words);
+                          QLabel *trialCountLabel, QString dataDirectory,
+                          std::vector<std::string> words);
     QString currentFile();
 
 public slots:
@@ -41,6 +43,7 @@ private:
     QComboBox *layoutsCombo;
     QCheckBox *useMouseCheck;
     QImageLabel *imageLabel;
+    QLabel *trialCountLabel;
     QDir dataDir;
     QDir currentDir;
     std::vector<std::string> words;

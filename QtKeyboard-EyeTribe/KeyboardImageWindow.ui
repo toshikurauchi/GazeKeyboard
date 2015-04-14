@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>877</width>
-    <height>600</height>
+    <width>924</width>
+    <height>607</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -147,6 +147,13 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="trialCountLabel">
+            <property name="text">
+             <string>1</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -446,7 +453,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>877</width>
+     <width>924</width>
      <height>18</height>
     </rect>
    </property>

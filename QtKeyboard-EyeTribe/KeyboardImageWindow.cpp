@@ -45,7 +45,8 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     trialManager = new TrialManager(this, ui->participantEdit, ui->wordsCombo,
                                     ui->trialsSpinBox, ui->currentTrialSpinBox,
                                     ui->layoutsCombo, ui->useMouseCheck,
-                                    ui->imageLabel, REC_DIR, words);
+                                    ui->imageLabel, ui->trialCountLabel, REC_DIR,
+                                    words);
     ui->recordingLight->setWord(ui->wordsCombo->currentText());
 
     // Create visualization manager
