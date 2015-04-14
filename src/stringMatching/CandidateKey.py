@@ -1,5 +1,6 @@
 import logging
 from collections import namedtuple
+import numpy as np
 
 Bucket = namedtuple('Bucket', ['pos', 'keys', 'layout', 'count'])
 Bucket.__str__ = lambda self : 'Keys:%s, %d, (%.2f,%.2f)'%(self.keys, self.count, self.pos[0], self.pos[1])
@@ -18,6 +19,7 @@ def findCandidates(data, layout, smooth=False, dist_thresh=0.1, max_cands=5):
         ref_cands = set()
         min_intersect = max_cands - 1
         cands = []
+        pos_list = []
         count = 0
         for entry in data:
             # Take the max_cands keys that are closest to the current pointer position
@@ -31,16 +33,20 @@ def findCandidates(data, layout, smooth=False, dist_thresh=0.1, max_cands=5):
             # otherwise start a new group
             if len(ref_cands.intersection(new_cands)) >= min_intersect:
                 prev_cands = prev_cands.union(new_cands)
+                pos_list.append(pos)
                 count += 1
             else:
                 if len(prev_cands) > 0:
-                    cands.append(Bucket(pos,list(prev_cands),layout,count))
+                    avg_pos = np.array(pos_list).mean(axis=0)
+                    cands.append(Bucket(avg_pos, list(prev_cands), layout, count))
                 prev_cands = new_cands
                 ref_cands = new_cands
                 min_intersect = max(len(prev_cands)-1,1)
+                pos_list = [pos]
                 count = 1
         if len(prev_cands) > 0:
-            cands.append(Bucket(pos,list(prev_cands),layout,count))
+            avg_pos = np.array(pos_list).mean(axis=0)
+            cands.append(Bucket(avg_pos, list(prev_cands), layout, count))
     else:
         cands = []
         for entry in data:

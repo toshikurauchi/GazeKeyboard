@@ -62,7 +62,7 @@ def loadData(filename):
             # Check line size
             format_size = 6 if is_gaze else 3
             if len(line) != format_size:
-                logging.warn('Invalid format for line %s'%line)
+                logging.warn('%s(%s):Invalid format for line %s'%(filename, is_gaze, line))
                 continue
             entry = [int(line[0]), (float(line[1]), float(line[2]))]
             if is_gaze:

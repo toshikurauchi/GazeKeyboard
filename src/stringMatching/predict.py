@@ -32,13 +32,14 @@ if __name__=='__main__':
     from KeyboardLayout import layoutFromFilename
     from DataFile import loadData
 
-    Log = logging.getLogger('Predict')
-    Log.setLevel(logging.WARNING)
+    logging.basicConfig()
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
 
     def extract_word(filename):
         match = re.search('(.*)([0-9]+).csv', os.path.split(filename)[1])
         if match: return match.group(1), match.group(2)
-        return None
+        return None, None
 
     def format_cand(c):
         args = {'w':c.word, 'dist':c.ldist}
@@ -50,17 +51,14 @@ if __name__=='__main__':
             if cands[i].word == word:
                 idx = i
                 break
-        if idx == 0:
-            logging.info('Found %s'%word)
-            return idx
-        if idx < len(cands): logging.info('Found at position %d'%idx)
-        else: logging.info('Not found :(')
+        if idx < len(cands): logger.info('Found at position %d'%idx)
+        else: logger.info('Not found :(')
         for c in cands[:idx+1]:
-            logging.info(format_cand(c))
+            logger.info(format_cand(c))
         return idx
 
     dct = trained_dict()
-    logging.info('Dictionary initialized')
+    logger.info('Dictionary initialized')
 
     if len(sys.argv) > 1:
         trial = sys.argv[1]
@@ -73,10 +71,10 @@ if __name__=='__main__':
     else:
         results = {}
         rec = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../../data/recordings/')
-        sbjs = [s for s in os.listdir(rec) if os.path.isdir(os.path.join(rec, s))]
+        sbjs = [s for s in os.listdir(rec) if os.path.isdir(os.path.join(rec, s)) and s != 'old']
         for sbj in sbjs:
             results[sbj] = {}
-            sbj_folder = os.path.join(rec, s)
+            sbj_folder = os.path.join(rec, sbj)
             modes = [m for m in os.listdir(sbj_folder) if os.path.isdir(os.path.join(sbj_folder, m))]
             for mode in modes:
                 results[sbj][mode] = {}
@@ -98,7 +96,8 @@ if __name__=='__main__':
                         cands = predict(dct, buckets)
                         if word not in results[sbj][mode][layout_name]:
                             results[sbj][mode][layout_name][word] = {}
-                        logging.info('Predictions for %s, %s, %s, %s'%(sbj, mode, layout_name, word))
+                        print 'here'
+                        logger.info('Predictions for %s, %s, %s, %s'%(sbj, mode, layout_name, word))
                         idx = candidate_pos(word, cands)
                         results[sbj][mode][layout_name][word][trial] = {'idx': idx, 'found': idx < len(cands)}
         with open('predictions.csv', 'wb') as csvfile:
