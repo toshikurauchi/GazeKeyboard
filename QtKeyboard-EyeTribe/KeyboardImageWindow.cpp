@@ -128,7 +128,6 @@ void KeyboardImageWindow::createLayoutsList()
     layouts.clear();
     layouts.append(new KeyboardLayout("Double Ring", "../layout/DoubleRing.bmp"));
     layouts.append(new KeyboardLayout("QWERTY", "../layout/QWERTY.bmp"));
-    layouts.append(new KeyboardLayout("Single Ring", "../layout/SingleRing.bmp"));
     layouts.append(new KeyboardLayout("Phone", "../layout/SquaredPhone.bmp"));
 }
 
