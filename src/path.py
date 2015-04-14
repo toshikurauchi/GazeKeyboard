@@ -17,9 +17,13 @@ class Path():
 		end = float(self.fixations[len(self.fixations)-1][0])
 		div = (end - start)/length
 		for i in range(1,(len(self.fixations)-1)):
-			n1 = math.floor(float(self.fixations[i-1][0])/div)
-			n2 = math.floor(float(self.fixations[i][0])/div)
-			n = n2 - n1
+			if (div != 0.0):
+				n1 = math.floor(float(self.fixations[i-1][0])/div)
+				n2 = math.floor(float(self.fixations[i][0])/div)
+				n = n2 - n1
+			else:
+				n = 100
+				n2 = 100
 			x1 = float(self.fixations[i-1][1])
 			x2 = float(self.fixations[i][1])
 			y1 = float(self.fixations[i-1][2])
@@ -35,7 +39,7 @@ class Path():
 			y_list.append(y.tolist())
 		if (len(self.fixations) == 2):
 			i = 1
-			n2 = math.floor(float(self.fixations[1][0]))
+			n2 = 0
 		x1 = float(self.fixations[i-1][1])
 		x2 = float(self.fixations[-1][1])
 		y1 = float(self.fixations[i-1][2])

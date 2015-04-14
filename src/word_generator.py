@@ -33,14 +33,22 @@ def viable_words(solution_list):
                 if d.check(item):
                         viable_words.append(item)
 
-        
-
         return viable_words
+
+def suggest_words(solution_list):
+        candidate_string = ""
+        d = enchant.Dict("en_US")
+        for i in range(len(solution_list)):
+                candidate_string += solution_list[i]
+        print candidate_string
+        corrections = d.suggest(candidate_string)
+        return corrections
+        
 
 if __name__=='__main__':
 
         keys = []
-        with open('../videos/ajjen/014/keys.csv', 'rb') as csvfile:
+        with open('../videos/ajjen/011/keys.csv', 'rb') as csvfile:
                 my_data = csv.reader(csvfile, delimiter=',')
                 for row in my_data:
                         keys.append(row)
@@ -71,7 +79,8 @@ if __name__=='__main__':
                 if key_list[i] != key_list[i-1]:
                         key_list_unique.append(key_list[i])
         print key_list_unique
-        solution_list = generate_combinations(key_list_unique)
+        #solution_list = generate_combinations(key_list_unique)
         
-        output = viable_words(solution_list)
-        print output
+        #output = viable_words(solution_list)
+        corrections = suggest_words(key_list_unique)
+        print corrections
