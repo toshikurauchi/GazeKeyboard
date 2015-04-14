@@ -2,20 +2,12 @@ import csv
 import os
 import math
 import sys,inspect
+from _collections import defaultdict
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
 
 from train_dictionary import trained_dict
-
-LANGUAGE_WEIGHT = 0.1
-LENGTH_WEIGHT   = 0.4
-TIME_WEIGHT     = 0.1
-PATH_WEIGHT     = 0.4
-
-def print_cand(c):
-    args = {'w':c.word, 'dist':c.ldist}
-    print '{w:<13}: Dist={dist:.2f}'.format(**args)
 
 def predict(dct, buckets):
     is_first = True
@@ -34,47 +26,90 @@ if __name__=='__main__':
     import sys
     import os
     import re
+    import logging
+
     from CandidateKey import findCandidates
     from KeyboardLayout import layoutFromFilename
     from DataFile import loadData
 
-    dct = trained_dict()
-    print 'Dictionary initialized'
+    Log = logging.getLogger('Predict')
+    Log.setLevel(logging.WARNING)
 
-    N_TOP = 10
+    def extract_word(filename):
+        match = re.search('(.*)([0-9]+).csv', os.path.split(filename)[1])
+        if match: return match.group(1), match.group(2)
+        return None
+
+    def format_cand(c):
+        args = {'w':c.word, 'dist':c.ldist}
+        return '{w:<13}: Dist={dist:.2f}'.format(**args)
+
+    def candidate_pos(word, cands):
+        idx = len(cands)
+        for i in range(len(cands)):
+            if cands[i].word == word:
+                idx = i
+                break
+        if idx == 0:
+            logging.info('Found %s'%word)
+            return idx
+        if idx < len(cands): logging.info('Found at position %d'%idx)
+        else: logging.info('Not found :(')
+        for c in cands[:idx+1]:
+            logging.info(format_cand(c))
+        return idx
+
+    dct = trained_dict()
+    logging.info('Dictionary initialized')
+
     if len(sys.argv) > 1:
         trial = sys.argv[1]
         data = loadData(trial)
-        layout = layoutFromFilename(trial)
-        buckets = findCandidates(data, layout)
+        layout_name = layoutFromFilename(trial)
+        buckets = findCandidates(data, layout_name)
+        if buckets is None: sys.exit(0)
         cands = predict(dct, buckets)
-        for c in cands[:N_TOP]:
-            print_cand(c)
+        candidate_pos(extract_word(trial)[0], cands)
     else:
+        results = {}
         rec = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../../data/recordings/')
-        sbjs = [os.path.join(rec,s) for s in os.listdir(rec)]
-        sbjs = [s for s in sbjs if os.path.isdir(s)]
-        modes = [os.path.join(sbj,m) for sbj in sbjs for m in os.listdir(sbj)]
-        modes = [m for m in modes if os.path.isdir(m)]
-        layouts = [os.path.join(m, l) for m in modes for l in os.listdir(m)]
-        layouts = [l for l in layouts if os.path.isdir(l)]
-        def extract_word(filename):
-            match = re.search('(.*)[0-9]+.csv', os.path.split(filename)[1])
-            if match: return match.group(1)
-            return None
-        words = [os.path.join(l, w) for l in layouts for w in os.listdir(l)]
-        words = [(extract_word(w), w) for w in words]
-        words = [w for w in words if w[0] is not None]
-        for w in words:
-            cur_word = w[0]
-            match = re.search('data\/recordings\/(.*)', w[1])
-            if match is None: continue
-            print 'Predictions for {f}'.format(f=match.group(1))
-            data = loadData(w[1])
-            layout = layoutFromFilename(w[1])
-            buckets = findCandidates(data, layout)
-            predict(dct, buckets)
-            cands = predict(dct, buckets)
-            for c in cands[:N_TOP]:
-                print_cand(c)
-
+        sbjs = [s for s in os.listdir(rec) if os.path.isdir(os.path.join(rec, s))]
+        for sbj in sbjs:
+            results[sbj] = {}
+            sbj_folder = os.path.join(rec, s)
+            modes = [m for m in os.listdir(sbj_folder) if os.path.isdir(os.path.join(sbj_folder, m))]
+            for mode in modes:
+                results[sbj][mode] = {}
+                mode_folder = os.path.join(sbj_folder, mode)
+                layouts = [l for l in os.listdir(mode_folder) if os.path.isdir(os.path.join(mode_folder, l))]
+                for layout_name in layouts:
+                    results[sbj][mode][layout_name] = {}
+                    layout_folder = os.path.join(mode_folder, layout_name)
+                    word_files = [w for w in os.listdir(layout_folder) if w.endswith('.csv')]
+                    for word_file in word_files:
+                        word, trial = extract_word(word_file)
+                        word_file = os.path.join(layout_folder, word_file)
+                        if word is None: continue
+                        data = loadData(word_file)
+                        layout = layoutFromFilename(word_file)
+                        buckets = findCandidates(data, layout)
+                        if buckets is None: continue
+                        predict(dct, buckets)
+                        cands = predict(dct, buckets)
+                        if word not in results[sbj][mode][layout_name]:
+                            results[sbj][mode][layout_name][word] = {}
+                        logging.info('Predictions for %s, %s, %s, %s'%(sbj, mode, layout_name, word))
+                        idx = candidate_pos(word, cands)
+                        results[sbj][mode][layout_name][word][trial] = {'idx': idx, 'found': idx < len(cands)}
+        with open('predictions.csv', 'wb') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['sbj', 'mode', 'layout', 'word', 'trial', 'found_idx', 'found'])
+            for sbj in results:
+                for mode in results[sbj]:
+                    for layout in results[sbj][mode]:
+                        for word in results[sbj][mode][layout]:
+                            for trial in results[sbj][mode][layout][word]:
+                                result = results[sbj][mode][layout][word][trial]
+                                idx = result['idx']
+                                found = result['found']
+                                writer.writerow([sbj, mode, layout, word, trial, idx, found])

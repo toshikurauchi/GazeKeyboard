@@ -7,8 +7,10 @@ Bucket.__str__ = lambda self : 'Keys:%s, %d, (%.2f,%.2f)'%(self.keys, self.count
 def findCandidates(data, layout, smooth=False, dist_thresh=0.1, max_cands=5):
     if layout is None:
         logging.warn('Could not detect layout from filename')
+        return None
     if data is None or len(data) == 0:
         logging.warn('Data not found')
+        return None
 
     # Load candidates
     if 1: # Just in case it is too slow
