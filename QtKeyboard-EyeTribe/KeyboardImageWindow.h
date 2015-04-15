@@ -5,6 +5,7 @@
 #include <QQuickItem>
 #include <QMessageBox>
 #include <vector>
+#include <QActionGroup>
 
 #include "GazeOverlay.h"
 #include "GazeListener.h"
@@ -40,6 +41,7 @@ private:
     bool recording;
     QMessageBox noParticipantMessageBox;
     QList<KeyboardLayout *> layouts;
+    QActionGroup *actionEyeTrackerGroup;
 
     void readSettings();
     void writeSettings();
@@ -47,6 +49,8 @@ private:
     void createLayoutsList();
 
     static const QString REC_DIR;
+    static const QString EYE_TRIBE;
+    static const QString TOBII;
 
 private slots:
     void toggleRecording();

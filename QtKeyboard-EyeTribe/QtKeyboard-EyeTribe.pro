@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     GazeListener.cpp \
     VisualizationManager.cpp \
     ScanpathPlotter.cpp \
-    EyeTribeListener.cpp
+    EyeTribeListener.cpp \
+    TobiiListener.cpp
 
 HEADERS  += KeyboardImageWindow.h \
     QImageLabel.h \
@@ -39,7 +40,8 @@ HEADERS  += KeyboardImageWindow.h \
     IDataRecorder.h \
     VisualizationManager.h \
     ScanpathPlotter.h \
-    EyeTribeListener.h
+    EyeTribeListener.h \
+    TobiiListener.h
 
 FORMS    += KeyboardImageWindow.ui
 
@@ -55,12 +57,12 @@ win32 {
         ## Windows x86 (32bit)
         message("x86 build")
         dlls.files += $$PWD/lib/x86/Tobii.EyeX.Client.dll
-        LIBS += -L$$PWD/lib/x86
+        LIBS += -L$$PWD/lib/x86/ -lTobii.EyeX.Client
     } else {
         ## Windows x64 (64bit)
         message("x86_64 build")
         dlls.files += $$PWD/lib/x64/Tobii.EyeX.Client.dll
-        LIBS += -L$$PWD/lib/64
+        LIBS += -L$$PWD/lib/x64/ -lTobii.EyeX.Client
     }
 }
 INSTALLS   += qmls dlls

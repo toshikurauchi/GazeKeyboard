@@ -10,8 +10,11 @@
 #include "ui_KeyboardImageWindow.h"
 #include "IDataRecorder.h"
 #include "EyeTribeListener.h"
+#include "TobiiListener.h"
 
 const QString KeyboardImageWindow::REC_DIR = "../data/recordings/";
+const QString KeyboardImageWindow::EYE_TRIBE = "EyeTribe";
+const QString KeyboardImageWindow::TOBII = "Tobii EyeX";
 
 KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::KeyboardImageWindow), gazeListener(0), recording(false), noParticipantMessageBox(this)
@@ -30,6 +33,16 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     // Create gaze overlay and listener
     gazeOverlay = new GazeOverlay(ui->imageLabel, 10);
     mouseListener = new MouseListener(this, gazeOverlay);
+    // Create eye tracker options in menu
+    actionEyeTrackerGroup = new QActionGroup(ui->menuEye_tracker);
+    actionEyeTrackerGroup->setExclusive(true);
+    QAction *actionEyeTribe = actionEyeTrackerGroup->addAction(EYE_TRIBE);
+    actionEyeTribe->setCheckable(true);
+    QAction *actionTobii = actionEyeTrackerGroup->addAction(TOBII);
+    actionTobii->setCheckable(true);
+    actionTobii->setChecked(true);
+    connect(actionEyeTrackerGroup, SIGNAL(triggered(QAction*)), this, SLOT(updateGazeListener()));
+    ui->menuEye_tracker->addActions(actionEyeTrackerGroup->actions());
     updateGazeListener();
 
     // Load words in combobox
@@ -76,6 +89,7 @@ KeyboardImageWindow::~KeyboardImageWindow()
     delete gazeOverlay;
     delete trialManager;
     delete vizManager;
+    delete actionEyeTrackerGroup;
     foreach (KeyboardLayout *layout, layouts)
     {
         delete layout;
@@ -199,5 +213,12 @@ void KeyboardImageWindow::loadVisualizations()
 void KeyboardImageWindow::updateGazeListener()
 {
     if (gazeListener != 0) delete gazeListener;
-    gazeListener = new EyeTribeListener(this, gazeOverlay);
+    if (actionEyeTrackerGroup->checkedAction()->text() == EYE_TRIBE)
+    {
+        gazeListener = new EyeTribeListener(this, gazeOverlay);
+    }
+    else
+    {
+        gazeListener = new TobiiListener(this, gazeOverlay);
+    }
 }

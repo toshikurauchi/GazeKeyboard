@@ -463,7 +463,13 @@
     </property>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuEye_tracker">
+    <property name="title">
+     <string>Eye tracker</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEye_tracker"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionExit">
@@ -472,6 +478,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionEye_tracker">
+   <property name="text">
+    <string>Eye tracker</string>
    </property>
   </action>
  </widget>
