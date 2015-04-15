@@ -24,7 +24,7 @@ void GazeOverlay::setShow(bool show)
 
 void GazeOverlay::newGaze(QPoint gaze)
 {
-    m_gaze = gaze;
+    m_gaze = mapFromGlobal(gaze);
 }
 
 void GazeOverlay::imageRescaled(QSize labelSize, QRect imgPos)

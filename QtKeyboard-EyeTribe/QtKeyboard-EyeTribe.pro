@@ -13,6 +13,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QtKeyboard-EyeTribe
 TEMPLATE = app
 
+INCLUDEPATH += $$PWD/include
+
 SOURCES += main.cpp\
     KeyboardImageWindow.cpp \
     QImageLabel.cpp \
@@ -23,7 +25,8 @@ SOURCES += main.cpp\
     MouseListener.cpp \
     GazeListener.cpp \
     VisualizationManager.cpp \
-    ScanpathPlotter.cpp
+    ScanpathPlotter.cpp \
+    EyeTribeListener.cpp
 
 HEADERS  += KeyboardImageWindow.h \
     QImageLabel.h \
@@ -35,7 +38,8 @@ HEADERS  += KeyboardImageWindow.h \
     MouseListener.h \
     IDataRecorder.h \
     VisualizationManager.h \
-    ScanpathPlotter.h
+    ScanpathPlotter.h \
+    EyeTribeListener.h
 
 FORMS    += KeyboardImageWindow.ui
 
@@ -45,4 +49,18 @@ OTHER_FILES += \
 
 qmls.path   = $${OUT_PWD}
 qmls.files += $${OTHER_FILES}
-INSTALLS   += qmls
+dlls.path   = $${OUT_PWD}
+win32 {
+    !contains(QMAKE_TARGET.arch, x86_64) {
+        ## Windows x86 (32bit)
+        message("x86 build")
+        dlls.files += $$PWD/lib/x86/Tobii.EyeX.Client.dll
+        LIBS += -L$$PWD/lib/x86
+    } else {
+        ## Windows x64 (64bit)
+        message("x86_64 build")
+        dlls.files += $$PWD/lib/x64/Tobii.EyeX.Client.dll
+        LIBS += -L$$PWD/lib/64
+    }
+}
+INSTALLS   += qmls dlls

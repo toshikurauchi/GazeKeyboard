@@ -9,11 +9,12 @@
 #include "KeyboardImageWindow.h"
 #include "ui_KeyboardImageWindow.h"
 #include "IDataRecorder.h"
+#include "EyeTribeListener.h"
 
 const QString KeyboardImageWindow::REC_DIR = "../data/recordings/";
 
 KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
-    QMainWindow(parent), ui(new Ui::KeyboardImageWindow), recording(false), noParticipantMessageBox(this)
+    QMainWindow(parent), ui(new Ui::KeyboardImageWindow), gazeListener(0), recording(false), noParticipantMessageBox(this)
 {
     // Setup application
     QCoreApplication::setOrganizationName("Boston University");
@@ -28,8 +29,8 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     readSettings();
     // Create gaze overlay and listener
     gazeOverlay = new GazeOverlay(ui->imageLabel, 10);
-    gazeListener = new GazeListener(this, gazeOverlay);
     mouseListener = new MouseListener(this, gazeOverlay);
+    updateGazeListener();
 
     // Load words in combobox
     loadWordList();
@@ -193,4 +194,10 @@ void KeyboardImageWindow::loadVisualizations()
     {
         vizManager->loadVisualizations();
     }
+}
+
+void KeyboardImageWindow::updateGazeListener()
+{
+    if (gazeListener != 0) delete gazeListener;
+    gazeListener = new EyeTribeListener(this, gazeOverlay);
 }

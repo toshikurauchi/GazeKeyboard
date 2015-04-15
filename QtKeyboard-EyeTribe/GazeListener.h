@@ -4,16 +4,15 @@
 #include <QFile>
 #include <QTextStream>
 
-#include "tet-cpp-client/include/gazeapi.h"
 #include "GazeOverlay.h"
 #include "IDataRecorder.h"
 
-class GazeListener : public QObject, public gtl::IGazeListener, public IDataRecorder
+class GazeListener : public QObject, public IDataRecorder
 {
     Q_OBJECT
 
 public:
-    explicit GazeListener(QObject *parent, GazeOverlay *gazeOverlay);
+    GazeListener(QObject *parent, GazeOverlay *gazeOverlay, QString header);
     ~GazeListener();
     void startRecording(QString filename);
     void stopRecording();
@@ -22,13 +21,14 @@ public:
 signals:
     void newGaze(QPoint gaze);
 
-private:
-   void on_gaze_data(gtl::GazeData const & gaze_data);
+protected:
+    QPointF normalize(QPoint point);
+    void printToFile(QString csvLine);
 
-   gtl::GazeApi m_api;
+private:
    GazeOverlay *m_gazeoverlay;
 
-   static const QString header;
+   QString header;
    QFile *file;
    QTextStream *out_stream;
 };

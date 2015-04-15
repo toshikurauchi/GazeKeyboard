@@ -52,6 +52,7 @@ private slots:
     void toggleRecording();
     void useMouseToggled(bool useMouse);
     void loadVisualizations();
+    void updateGazeListener();
 };
 
 #endif // KEYBOARDIMAGEWINDOW_H
