@@ -11,7 +11,9 @@ public:
     void setRecording(bool recording);
 
 public slots:
-    void setWord(QString word);
+    void setWord(QString word = "");
+    void showWord();
+    void hideWord();
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -21,6 +23,7 @@ private:
     int paddingX;
     int paddingY;
     int radius;
+    bool shouldShowWord;
     QString word;
 };
 

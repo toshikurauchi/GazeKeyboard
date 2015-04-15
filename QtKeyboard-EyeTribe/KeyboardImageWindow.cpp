@@ -46,8 +46,7 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
                                     ui->trialsSpinBox, ui->currentTrialSpinBox,
                                     ui->layoutsCombo, ui->useMouseCheck,
                                     ui->imageLabel, ui->trialCountLabel, REC_DIR,
-                                    words);
-    ui->recordingLight->setWord(ui->wordsCombo->currentText());
+                                    words, 20);
 
     // Create visualization manager
     vizManager = new VisualizationManager(this, ui->participantsComboViz, ui->modeComboViz,
@@ -63,6 +62,7 @@ KeyboardImageWindow::KeyboardImageWindow(QWidget *parent) :
     connect(ui->useMouseCheck, SIGNAL(toggled(bool)), this, SLOT(useMouseToggled(bool)));
     connect(ui->imageLabel, SIGNAL(mouseMoved(QPoint)), mouseListener, SLOT(mouseMoved(QPoint)));
     connect(ui->showPointerCheck, SIGNAL(toggled(bool)), gazeOverlay, SLOT(setShow(bool)));
+    connect(trialManager, SIGNAL(paused()), ui->recordingLight, SLOT(hideWord()));
     useMouseToggled(ui->useMouseCheck->isChecked());
     gazeOverlay->setShow(ui->showPointerCheck->isChecked());
 }
@@ -91,7 +91,16 @@ void KeyboardImageWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Space)
     {
-        toggleRecording();
+        if (trialManager->isPaused())
+        {
+            trialManager->resume();
+            ui->recordingLight->setWord(ui->wordsCombo->currentText());
+            ui->recordingLight->showWord();
+        }
+        else
+        {
+            toggleRecording();
+        }
     }
 }
 

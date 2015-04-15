@@ -22,8 +22,13 @@ public:
                           QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo,
                           QCheckBox *useMouseCheck, QImageLabel *imageLabel,
                           QLabel *trialCountLabel, QString dataDirectory,
-                          std::vector<std::string> words);
+                          std::vector<std::string> words, int sessionSize);
     QString currentFile();
+    bool isPaused();
+    void resume();
+
+signals:
+    void paused();
 
 public slots:
     void updateTrial();
@@ -33,7 +38,8 @@ protected slots:
     void updateDir();
 
 private slots:
-    void changeLayout(int layoutIdx);
+    void displayCurrentLayout();
+    void displaySessionPage(bool blockFinished = false);
 
 private:
     QLineEdit *participantEdit;
@@ -47,11 +53,11 @@ private:
     QDir dataDir;
     QDir currentDir;
     std::vector<std::string> words;
+    bool m_paused;
+    int sessionSize;
 
     int trialForWord(QString word);
     KeyboardLayout *currentLayout();
-
-    static const int MAX_TRIALS;
 };
 
 #endif // TRIALMANAGER_H

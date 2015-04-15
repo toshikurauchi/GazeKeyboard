@@ -4,7 +4,7 @@
 #include "RecordingLight.h"
 
 RecordingLight::RecordingLight(QWidget *parent) :
-    QWidget(parent), recording(false), paddingX(50), paddingY(5), radius(5)
+    QWidget(parent), recording(false), paddingX(50), paddingY(5), radius(5), shouldShowWord(false)
 {
     setMinimumWidth(4*paddingX);
     setMinimumHeight(4*paddingY);
@@ -22,6 +22,18 @@ void RecordingLight::setWord(QString word)
     update();
 }
 
+void RecordingLight::showWord()
+{
+    shouldShowWord = true;
+    update();
+}
+
+void RecordingLight::hideWord()
+{
+    shouldShowWord = false;
+    update();
+}
+
 void RecordingLight::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
@@ -34,8 +46,9 @@ void RecordingLight::paintEvent(QPaintEvent *event)
     painter.setBrush(QBrush(color));
     painter.setPen(color);
     painter.drawRoundedRect(paddingX, paddingY, width()-2*paddingX, height()-2*paddingY, radius, radius);
-    if (!recording)
+    if (!recording && shouldShowWord)
     {
+        painter.setRenderHint(QPainter::TextAntialiasing);
         painter.setPen(QColor(255, 255, 255));
         QFont font;
         font.setPixelSize(height()-2*(paddingY+radius));

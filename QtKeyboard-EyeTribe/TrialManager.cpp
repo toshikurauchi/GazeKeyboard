@@ -2,33 +2,35 @@
 #include <QDebug>
 #include <ctime>
 #include <algorithm>
+#include <QPixmap>
+#include <QPainter>
 
 #include "TrialManager.h"
-
-const int TrialManager::MAX_TRIALS = 100;
 
 TrialManager::TrialManager(QObject *parent, QLineEdit *participantEdit,
                            QComboBox *wordsCombo, QSpinBox *trialsSpinBox,
                            QSpinBox *currentTrialSpinBox, QComboBox *layoutsCombo,
                            QCheckBox *useMouseCheck, QImageLabel *imageLabel,
                            QLabel *trialCountLabel, QString dataDirectory,
-                           std::vector<std::string> words) :
+                           std::vector<std::string> words, int sessionSize) :
     QObject(parent), participantEdit(participantEdit), wordsCombo(wordsCombo), trialsSpinBox(trialsSpinBox),
     currentTrialSpinBox(currentTrialSpinBox), layoutsCombo(layoutsCombo), useMouseCheck(useMouseCheck),
-    imageLabel(imageLabel), trialCountLabel(trialCountLabel), dataDir(dataDirectory), words(words)
+    imageLabel(imageLabel), trialCountLabel(trialCountLabel), dataDir(dataDirectory), words(words),
+    m_paused(true), sessionSize(sessionSize)
 {
     connect(participantEdit, SIGNAL(textChanged(QString)), this, SLOT(updateDir()));
     connect(wordsCombo, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateTrialForWord(QString)));
     connect(trialsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTrial()));
     connect(layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateDir()));
     connect(useMouseCheck, SIGNAL(toggled(bool)), this, SLOT(updateDir()));
-
-    connect(layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeLayout(int)));
-    changeLayout(layoutsCombo->currentIndex());
+    connect(this, SIGNAL(paused()), this, SLOT(displaySessionPage()));
+    connect(layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(displayCurrentLayout()));
 
     if (!dataDir.exists()) QDir().mkpath(dataDirectory);
     updateDir();
     updateTrial();
+
+    displaySessionPage();
 }
 
 QString TrialManager::currentFile()
@@ -47,6 +49,17 @@ QString TrialManager::currentFile()
     return currentDir.absoluteFilePath(filename);
 }
 
+bool TrialManager::isPaused()
+{
+    return m_paused;
+}
+
+void TrialManager::resume()
+{
+    m_paused = false;
+    displayCurrentLayout();
+}
+
 void TrialManager::updateTrial()
 {
     if (currentDir.exists())
@@ -55,6 +68,11 @@ void TrialManager::updateTrial()
         csvFilter << "*.csv";
         int totalTrials = currentDir.entryInfoList(csvFilter).size();
         trialCountLabel->setText(QString::number(totalTrials + 1));
+        if (totalTrials % sessionSize == 0)
+        {
+            m_paused = true;
+            emit paused();
+        }
         int trials = trialsSpinBox->value();
         for (int i = 0; i < wordsCombo->count(); i++)
         {
@@ -68,6 +86,9 @@ void TrialManager::updateTrial()
             }
         }
         updateTrialForWord(wordsCombo->currentText());
+        m_paused = true;
+        emit paused();
+        displaySessionPage(true);
     }
     else
     {
@@ -108,10 +129,37 @@ void TrialManager::updateDir()
     updateTrial();
 }
 
-void TrialManager::changeLayout(int layoutIdx)
+void TrialManager::displayCurrentLayout()
 {
-    KeyboardLayout *layout = qvariant_cast<KeyboardLayout *>(layoutsCombo->itemData(layoutIdx));
+    KeyboardLayout *layout = qvariant_cast<KeyboardLayout *>(layoutsCombo->currentData());
     QPixmap pixmap(layout->filename());
+    imageLabel->setPixmap(pixmap);
+    imageLabel->update();
+}
+
+void TrialManager::displaySessionPage(bool blockFinished)
+{
+    QPixmap pixmap(imageLabel->size());
+    QPainter painter(&pixmap);
+
+    painter.setPen(QColor(0, 0, 0));
+    painter.setRenderHint(QPainter::TextAntialiasing);
+    QFont font;
+    font.setPixelSize(20);
+    painter.setFont(font);
+
+    QString text;
+    if (blockFinished)
+    {
+        text = "Block finished\nPlease wait for further instructions";
+    }
+    else
+    {
+        int curSession = trialCountLabel->text().toInt() / sessionSize + 1;
+        text.sprintf("Session %d\nPress <SPACE> to start", curSession);
+    }
+    painter.drawText(imageLabel->rect(), Qt::AlignCenter, text);
+
     imageLabel->setPixmap(pixmap);
     imageLabel->update();
 }
