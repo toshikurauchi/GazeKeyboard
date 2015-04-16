@@ -41,9 +41,10 @@ bool MouseListener::isRecording()
 
 void MouseListener::mouseMoved(QPoint mousePos)
 {
+    emit newMousePos(mousePos);
+
     // Get gaze position in keyboard image coordinates
     mousePos = gazeOverlay->mapFromGlobal(mousePos);
-    emit newMousePos(mousePos);
 
     // Normalize coordinates
     QRect imgPos = gazeOverlay->imagePosition();
@@ -54,3 +55,5 @@ void MouseListener::mouseMoved(QPoint mousePos)
         *out_stream << QDateTime::currentMSecsSinceEpoch() << "," << posX << "," << posY << "\n";
     }
 }
+
+

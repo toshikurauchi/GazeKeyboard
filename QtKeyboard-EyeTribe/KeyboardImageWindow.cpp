@@ -192,12 +192,14 @@ void KeyboardImageWindow::useMouseToggled(bool useMouse)
         prevRecorder = gazeListener;
         disconnect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
         connect(mouseListener, SIGNAL(newMousePos(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
+        gazeOverlay->setGazeMode(false);
     }
     else
     {
         prevRecorder = mouseListener;
         disconnect(mouseListener, SIGNAL(newMousePos(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
         connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
+        gazeOverlay->setGazeMode(true);
     }
     if (prevRecorder->isRecording()) prevRecorder->stopRecording();
 }
