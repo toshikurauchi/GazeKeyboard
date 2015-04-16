@@ -172,9 +172,6 @@ void OnGazeDataEvent(TX_HANDLE hGazeDataBehavior)
 {
     TX_GAZEPOINTDATAEVENTPARAMS eventParams;
     if (txGetGazePointDataEventParams(hGazeDataBehavior, &eventParams) == TX_RESULT_OK) {
-        QString data;
-        data.sprintf("(EyeX) Gaze Data: (%.1f, %.1f) timestamp %.0f ms", eventParams.X, eventParams.Y, eventParams.Timestamp);
-        qDebug() << data;
         foreach (TobiiListener *listener, instances) {
             listener->onGaze(eventParams.Timestamp, QPointF(eventParams.X, eventParams.Y));
         }

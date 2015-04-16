@@ -212,7 +212,11 @@ void KeyboardImageWindow::loadVisualizations()
 
 void KeyboardImageWindow::updateGazeListener()
 {
-    if (gazeListener != 0) delete gazeListener;
+    if (gazeListener != 0)
+    {
+        disconnect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
+        delete gazeListener;
+    }
     if (actionEyeTrackerGroup->checkedAction()->text() == EYE_TRIBE)
     {
         gazeListener = new EyeTribeListener(this, gazeOverlay);
@@ -221,4 +225,5 @@ void KeyboardImageWindow::updateGazeListener()
     {
         gazeListener = new TobiiListener(this, gazeOverlay);
     }
+    connect(gazeListener, SIGNAL(newGaze(QPoint)), gazeOverlay, SLOT(newGaze(QPoint)));
 }
