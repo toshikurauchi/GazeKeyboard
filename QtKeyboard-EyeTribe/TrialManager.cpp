@@ -24,7 +24,6 @@ TrialManager::TrialManager(QObject *parent, QLineEdit *participantEdit,
     connect(layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(updateDir()));
     connect(useMouseCheck, SIGNAL(toggled(bool)), this, SLOT(updateDir()));
     connect(this, SIGNAL(paused()), this, SLOT(displaySessionPage()));
-    connect(layoutsCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(displayCurrentLayout()));
 
     if (!dataDir.exists()) QDir().mkpath(dataDirectory);
     updateDir();
@@ -70,7 +69,6 @@ void TrialManager::updateTrial()
         trialCountLabel->setText(QString::number(totalTrials + 1));
         if (totalTrials % sessionSize == 0)
         {
-            m_paused = true;
             emit paused();
         }
         int trials = trialsSpinBox->value();
@@ -86,7 +84,6 @@ void TrialManager::updateTrial()
             }
         }
         updateTrialForWord(wordsCombo->currentText());
-        m_paused = true;
         emit paused();
         displaySessionPage(true);
     }
@@ -127,6 +124,7 @@ void TrialManager::updateDir()
         currentDir = QDir(currentDir.absoluteFilePath(currentLayout()->trimmedName()));
     }
     updateTrial();
+    displaySessionPage();
 }
 
 void TrialManager::displayCurrentLayout()
@@ -139,6 +137,8 @@ void TrialManager::displayCurrentLayout()
 
 void TrialManager::displaySessionPage(bool blockFinished)
 {
+    m_paused = true;
+
     QPixmap pixmap(imageLabel->size());
     QPainter painter(&pixmap);
 
@@ -155,7 +155,7 @@ void TrialManager::displaySessionPage(bool blockFinished)
     }
     else
     {
-        int curSession = trialCountLabel->text().toInt() / sessionSize + 1;
+        int curSession = (trialCountLabel->text().toInt() - 1) / sessionSize + 1;
         text.sprintf("Session %d\nPress <SPACE> to start", curSession);
     }
     painter.drawText(imageLabel->rect(), Qt::AlignCenter, text);
