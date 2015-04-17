@@ -56,7 +56,7 @@ void GazeOverlay::paintEvent(QPaintEvent *event)
         filterOldPoints();
         for (int i = 0; i < prevPoints.size(); i++) {
             TstampPoint point = prevPoints.at(i);
-            QColor pointColor(255, 0, 0, 255*(i+1)/(prevPoints.size()+1)); // We don't want the oldest to be completely transparent
+            QColor pointColor(150, 150, 0, 150*(i+1)/(prevPoints.size()+1)); // We don't want the oldest to be completely transparent
             QBrush brush(pointColor);
             painter.setBrush(brush);
             painter.setPen(pointColor);
@@ -65,7 +65,7 @@ void GazeOverlay::paintEvent(QPaintEvent *event)
     }
     else
     {
-        QBrush brush(QColor(255, 0, 0));
+        QBrush brush(QColor(150, 150, 0));
         painter.setBrush(brush);
         painter.drawEllipse(m_gaze, m_mouseRadius, m_mouseRadius);
     }
