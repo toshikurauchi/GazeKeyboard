@@ -17,8 +17,9 @@ def predict(dct, buckets):
         is_first = False
     if len(cands) > 0:
         max_len = float(max([len(c.word) for c in cands]))
-        cands = [c for c in cands if c.ldist < 0.2]
-        compute_weight = lambda c: len(c.word)/max_len * math.exp(-10*c.ldist)
+        #cands = [c for c in cands if c.ldist < 0.2]
+        cands = list(cands)
+        compute_weight = lambda c: len(c.word)/max_len * math.exp(-0.5*c.ldist)
         cands.sort(key=compute_weight, reverse=True)
     return cands
 
@@ -34,7 +35,7 @@ if __name__=='__main__':
 
     logging.basicConfig()
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.WARNING)
 
     def extract_word(filename):
         match = re.search('(.*)([0-9]+).csv', os.path.split(filename)[1])
@@ -92,13 +93,14 @@ if __name__=='__main__':
                         layout = layoutFromFilename(word_file)
                         buckets = findCandidates(data, layout)
                         if buckets is None: continue
-                        predict(dct, buckets)
                         cands = predict(dct, buckets)
                         if word not in results[sbj][mode][layout_name]:
                             results[sbj][mode][layout_name][word] = {}
-                        print 'here'
+                        print 'Predictions for %s, %s, %s, %s'%(sbj, mode, layout_name, word)
                         logger.info('Predictions for %s, %s, %s, %s'%(sbj, mode, layout_name, word))
                         idx = candidate_pos(word, cands)
+                        for c in cands[:5]:
+                            print c.word
                         results[sbj][mode][layout_name][word][trial] = {'idx': idx, 'found': idx < len(cands)}
         with open('predictions.csv', 'wb') as csvfile:
             writer = csv.writer(csvfile)

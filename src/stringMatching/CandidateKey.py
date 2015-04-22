@@ -14,7 +14,7 @@ def findCandidates(data, layout, smooth=False, dist_thresh=0.1, max_cands=5):
         return None
 
     # Load candidates
-    if 1: # Just in case it is too slow
+    if 0: # Just in case it is too slow
         prev_cands = set()
         ref_cands = set()
         min_intersect = max_cands - 1

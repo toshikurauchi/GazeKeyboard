@@ -36,10 +36,10 @@ def levenshtein_iter(char, bucket, A00, A01, A10):
         insert_cost = 1
         logging.error('Layout does not contain this character')
     else:
-        dist = math.sqrt((key_pos[0]-bucket.pos[0])**2 + (key_pos[1]-bucket.pos[1])**2)/bucket.layout.size[0]
+        dist = math.sqrt((key_pos[0]-bucket.pos[0])**2 + (key_pos[1]-bucket.pos[1])**2)#/bucket.layout.size[0]
         insert_cost = dist
         if match_cost == 0:
-            match_cost = dist/bucket.count
+            match_cost = dist#/bucket.count
     # IMPORTANT: the following line is different from the levenshtein
     # distance. We don't penalize deletions from buckets list.
     A11 = min([A10, A01 + insert_cost, A00 + match_cost])

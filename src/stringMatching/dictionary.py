@@ -47,7 +47,7 @@ class Dictionary(Trie):
         self._reset(self.root)
 
     def _reset(self, cur_dict, depth=0):
-        cur_dict[self._ldist] = depth
+        cur_dict[self._ldist] = 0 if depth == 0 else float('inf')
         for key in cur_dict.keys():
             if key not in self.flags:
                 self._reset(cur_dict[key], depth+1)
@@ -63,8 +63,8 @@ class Dictionary(Trie):
         if depth > 0:
             cur_dict[self._ldist] = levenshtein_iter(char, buckets[-1], a00_dist, a01_dist, a10_dist)
         word += char
-        if cur_dict[self._ldist] > 2:
-            return cand
+        #if cur_dict[self._ldist] > 2:
+        #    return cand
         if self._end in cur_dict.keys(): # Is a word
             cand.add(WordCandidate(word, cur_dict[self._end][self._count], cur_dict[self._ldist], buckets))
         for key in cur_dict.keys():
@@ -85,3 +85,5 @@ class WordCandidate(object):
     def __hash__(self, *args, **kwargs):
         return self.word.__hash__(*args, **kwargs)
 
+    def __str__(self, *args, **kwargs):
+        return self.word
