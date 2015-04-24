@@ -175,7 +175,7 @@ int TrialManager::trialForWord(QString word)
     if (currentDir.exists())
     {
         QStringList nameFilter;
-        nameFilter << "[0123456789]*" + word + "[0123456789]*.csv";
+        nameFilter << "*[0123456789]" + word + "[0123456789]*.csv";
         int lastTrial = currentDir.entryInfoList(nameFilter).size();
         return lastTrial + 1;
     }
