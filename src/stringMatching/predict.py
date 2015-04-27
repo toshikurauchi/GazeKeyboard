@@ -38,7 +38,7 @@ if __name__=='__main__':
     logger.setLevel(logging.WARNING)
 
     def extract_word(filename):
-        match = re.search('(.*)([0-9]+).csv', os.path.split(filename)[1])
+        match = re.search('[0-9]+(.*)([0-9]+).csv', os.path.split(filename)[1])
         if match: return match.group(1), match.group(2)
         return None, None
 
@@ -72,7 +72,7 @@ if __name__=='__main__':
     else:
         results = {}
         rec = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../../data/recordings/')
-        sbjs = [s for s in os.listdir(rec) if os.path.isdir(os.path.join(rec, s)) and s != 'old']
+        sbjs = [s for s in os.listdir(rec) if os.path.isdir(os.path.join(rec, s)) and s != 'old' and s.startswith('P')]
         for sbj in sbjs:
             results[sbj] = {}
             sbj_folder = os.path.join(rec, sbj)
