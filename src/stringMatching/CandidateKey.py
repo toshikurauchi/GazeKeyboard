@@ -23,7 +23,7 @@ def findCandidates(data, layout, smooth=False, dist_thresh=0.1, max_cands=5):
         count = 0
         for entry in data:
             # Take the max_cands keys that are closest to the current pointer position
-            pos = entry.denorm_pos(layout.size)
+            pos = entry.norm_pos_keep_ratio(layout.size)
             new_cands = sorted(layout.sorted_keys(pos)[0:max_cands])
             # Only consider keys within dist_thresh distance
             distSq = lambda p1, p2: (p1[0]-p2[0])**2 + (p1[1]-p2[1])**2
@@ -50,7 +50,7 @@ def findCandidates(data, layout, smooth=False, dist_thresh=0.1, max_cands=5):
     else:
         cands = []
         for entry in data:
-            pos = entry.denorm_pos(layout.size)
+            pos = entry.norm_pos_keep_ratio(layout.size)
             keys = sorted(layout.sorted_keys(pos)[0:max_cands])
             cands.append(Bucket(pos, keys, layout, 1))
     return cands

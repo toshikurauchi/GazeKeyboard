@@ -16,8 +16,13 @@ class KeyboardLayout(object):
     def __str__(self):
         return '%s: %d keys'%(self.name,len(self._keys))
 
-    def key_pos(self, key):
-        if key in self._keys: return self._keys[key].pos
+    def key_pos(self, key, normalized=False):
+        if key in self._keys:
+            if normalized:
+                pos = self._keys[key].pos
+                return (pos[0]/self.size[0], pos[1]/self.size[0])
+            else:
+                return self._keys[key].pos
         return None
 
     def add_key(self, key):
@@ -26,7 +31,7 @@ class KeyboardLayout(object):
         self._keys[key.name] = key
 
     def sorted_keys(self, ref_point):
-        dist = lambda k: (k.pos[0]-ref_point[0])**2 + (k.pos[1]-ref_point[1])**2
+        dist = lambda k: (k.pos[0]/self.size[0]-ref_point[0])**2 + (k.pos[1]/self.size[0]-ref_point[1])**2
         keys = sorted(self._keys.values(), key=dist)
         return [k for k in keys]
 

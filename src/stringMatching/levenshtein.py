@@ -31,15 +31,15 @@ def levenshtein_iter(char, bucket, A00, A01, A10):
     assert len(char) == 1, 'Single char expected, got string of length {l}'.format(l=len(char))
 
     match_cost = 0 if char in bucket.keys else 1
-    key_pos = bucket.layout.key_pos(char)
+    key_pos = bucket.layout.key_pos(char, normalized=True)
     if key_pos is None:
         insert_cost = 1
         logging.error('Layout does not contain this character')
     else:
         dist = math.sqrt((key_pos[0]-bucket.pos[0])**2 + (key_pos[1]-bucket.pos[1])**2)#/bucket.layout.size[0]
         insert_cost = dist
-        if match_cost == 0:
-            match_cost = dist#/bucket.count
+        #if match_cost == 0:
+        match_cost = dist#/bucket.count
     # IMPORTANT: the following line is different from the levenshtein
     # distance. We don't penalize deletions from buckets list.
     A11 = min([A10, A01 + insert_cost, A00 + match_cost])

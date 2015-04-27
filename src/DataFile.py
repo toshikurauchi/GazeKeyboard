@@ -21,6 +21,11 @@ class Data(object):
         x, y = self.pos()
         w, h = size
         return (x*w, y*h)
+        
+    def norm_pos_keep_ratio(self, size):
+        x, y = self.pos()
+        w, h = size
+        return (x, y*h/w)
 
 def loadData(filename):
     data = []

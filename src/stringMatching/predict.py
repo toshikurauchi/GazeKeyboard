@@ -17,9 +17,8 @@ def predict(dct, buckets):
         is_first = False
     if len(cands) > 0:
         max_len = float(max([len(c.word) for c in cands]))
-        #cands = [c for c in cands if c.ldist < 0.2]
         cands = list(cands)
-        compute_weight = lambda c: len(c.word)/max_len * math.exp(-0.5*c.ldist)
+        compute_weight = lambda c: len(c.word)/max_len * math.exp(-5.5*c.ldist)
         cands.sort(key=compute_weight, reverse=True)
     return cands
 
