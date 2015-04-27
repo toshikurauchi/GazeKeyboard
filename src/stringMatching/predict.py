@@ -71,7 +71,7 @@ if __name__=='__main__':
         candidate_pos(extract_word(trial)[0], cands)
     else:
         results = {}
-        rec = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../../data/recordings/')
+        rec = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/recordings/')
         sbjs = [s for s in os.listdir(rec) if os.path.isdir(os.path.join(rec, s)) and s != 'old' and s.startswith('P')]
         for sbj in sbjs:
             results[sbj] = {}

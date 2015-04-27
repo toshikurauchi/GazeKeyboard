@@ -1,0 +1,248 @@
+FOUND:
+layout      mode 
+DoubleRing  gaze     0.983425
+            mouse    0.983380
+Phone       gaze     0.983240
+            mouse    0.983287
+QWERTY      gaze     0.983240
+            mouse    0.983193
+dtype: float64
+
+INDEX MEAN:
+layout      mode 
+DoubleRing  gaze     3.196133
+            mouse    1.725762
+Phone       gaze     2.798883
+            mouse    2.069638
+QWERTY      gaze     3.156425
+            mouse    2.663866
+Name: found_idx, dtype: float64
+
+INDEX MAX:
+layout      mode 
+DoubleRing  gaze     100
+            mouse    100
+Phone       gaze     100
+            mouse    100
+QWERTY      gaze     100
+            mouse    100
+Name: found_idx, dtype: int64
+
+TOP 1:
+layout      mode 
+DoubleRing  gaze     0.671271
+            mouse    0.930748
+Phone       gaze     0.734637
+            mouse    0.888579
+QWERTY      gaze     0.768156
+            mouse    0.879552
+dtype: float64
+
+AMONG TOP 3:
+layout      mode 
+DoubleRing  gaze     0.831492
+            mouse    0.980609
+Phone       gaze     0.874302
+            mouse    0.972145
+QWERTY      gaze     0.893855
+            mouse    0.955182
+dtype: float64
+FOUND:
+sbj  layout      mode 
+P01  DoubleRing  gaze     0.983871
+                 mouse    0.983607
+     Phone       gaze     0.983051
+                 mouse    0.983051
+     QWERTY      gaze     0.983051
+                 mouse    0.982759
+P02  DoubleRing  gaze     0.983333
+                 mouse    0.983333
+     Phone       gaze     0.983051
+                 mouse    0.983333
+     QWERTY      gaze     0.983051
+                 mouse    0.983051
+P03  DoubleRing  gaze     0.983333
+                 mouse    0.983333
+     Phone       gaze     0.983333
+                 mouse    0.983051
+     QWERTY      gaze     0.983333
+                 mouse    0.983333
+P04  DoubleRing  gaze     0.983333
+                 mouse    0.983333
+     Phone       gaze     0.983333
+                 mouse    0.983333
+     QWERTY      gaze     0.983333
+                 mouse    0.983333
+P05  DoubleRing  gaze     0.983333
+                 mouse    0.983333
+     Phone       gaze     0.983333
+                 mouse    0.983333
+     QWERTY      gaze     0.983333
+                 mouse    0.983333
+P06  DoubleRing  gaze     0.983333
+                 mouse    0.983333
+     Phone       gaze     0.983333
+                 mouse    0.983607
+     QWERTY      gaze     0.983333
+                 mouse    0.983333
+dtype: float64
+
+INDEX MEAN:
+sbj  layout      mode 
+P01  DoubleRing  gaze     5.709677
+                 mouse    1.721311
+     Phone       gaze     5.847458
+                 mouse    1.949153
+     QWERTY      gaze     7.457627
+                 mouse    3.137931
+P02  DoubleRing  gaze     1.850000
+                 mouse    1.700000
+     Phone       gaze     2.169492
+                 mouse    1.733333
+     QWERTY      gaze     1.983051
+                 mouse    1.813559
+P03  DoubleRing  gaze     2.950000
+                 mouse    1.750000
+     Phone       gaze     1.866667
+                 mouse    2.305085
+     QWERTY      gaze     2.650000
+                 mouse    1.733333
+P04  DoubleRing  gaze     2.883333
+                 mouse    1.733333
+     Phone       gaze     2.383333
+                 mouse    2.866667
+     QWERTY      gaze     1.933333
+                 mouse    1.733333
+P05  DoubleRing  gaze     3.166667
+                 mouse    1.716667
+     Phone       gaze     2.633333
+                 mouse    1.850000
+     QWERTY      gaze     3.133333
+                 mouse    4.533333
+P06  DoubleRing  gaze     2.533333
+                 mouse    1.733333
+     Phone       gaze     1.933333
+                 mouse    1.721311
+     QWERTY      gaze     1.833333
+                 mouse    3.033333
+Name: found_idx, dtype: float64
+
+INDEX MAX:
+sbj  layout      mode 
+P01  DoubleRing  gaze     100
+                 mouse    100
+     Phone       gaze     100
+                 mouse    100
+     QWERTY      gaze     100
+                 mouse    100
+P02  DoubleRing  gaze     100
+                 mouse    100
+     Phone       gaze     100
+                 mouse    100
+     QWERTY      gaze     100
+                 mouse    100
+P03  DoubleRing  gaze     100
+                 mouse    100
+     Phone       gaze     100
+                 mouse    100
+     QWERTY      gaze     100
+                 mouse    100
+P04  DoubleRing  gaze     100
+                 mouse    100
+     Phone       gaze     100
+                 mouse    100
+     QWERTY      gaze     100
+                 mouse    100
+P05  DoubleRing  gaze     100
+                 mouse    100
+     Phone       gaze     100
+                 mouse    100
+     QWERTY      gaze     100
+                 mouse    100
+P06  DoubleRing  gaze     100
+                 mouse    100
+     Phone       gaze     100
+                 mouse    100
+     QWERTY      gaze     100
+                 mouse    100
+Name: found_idx, dtype: int64
+
+TOP 1:
+sbj  layout      mode 
+P01  DoubleRing  gaze     0.451613
+                 mouse    0.934426
+     Phone       gaze     0.474576
+                 mouse    0.796610
+     QWERTY      gaze     0.474576
+                 mouse    0.879310
+P02  DoubleRing  gaze     0.900000
+                 mouse    0.950000
+     Phone       gaze     0.813559
+                 mouse    0.916667
+     QWERTY      gaze     0.881356
+                 mouse    0.864407
+P03  DoubleRing  gaze     0.666667
+                 mouse    0.916667
+     Phone       gaze     0.866667
+                 mouse    0.932203
+     QWERTY      gaze     0.833333
+                 mouse    0.916667
+P04  DoubleRing  gaze     0.650000
+                 mouse    0.933333
+     Phone       gaze     0.666667
+                 mouse    0.950000
+     QWERTY      gaze     0.800000
+                 mouse    0.916667
+P05  DoubleRing  gaze     0.600000
+                 mouse    0.933333
+     Phone       gaze     0.716667
+                 mouse    0.833333
+     QWERTY      gaze     0.750000
+                 mouse    0.833333
+P06  DoubleRing  gaze     0.766667
+                 mouse    0.916667
+     Phone       gaze     0.866667
+                 mouse    0.901639
+     QWERTY      gaze     0.866667
+                 mouse    0.866667
+dtype: float64
+
+AMONG TOP 3:
+sbj  layout      mode 
+P01  DoubleRing  gaze     0.725806
+                 mouse    0.967213
+     Phone       gaze     0.661017
+                 mouse    0.966102
+     QWERTY      gaze     0.661017
+                 mouse    0.931034
+P02  DoubleRing  gaze     0.950000
+                 mouse    0.983333
+     Phone       gaze     0.915254
+                 mouse    0.983333
+     QWERTY      gaze     0.966102
+                 mouse    0.983051
+P03  DoubleRing  gaze     0.850000
+                 mouse    0.983333
+     Phone       gaze     0.966667
+                 mouse    0.966102
+     QWERTY      gaze     0.916667
+                 mouse    0.983333
+P04  DoubleRing  gaze     0.816667
+                 mouse    0.983333
+     Phone       gaze     0.900000
+                 mouse    0.966667
+     QWERTY      gaze     0.966667
+                 mouse    0.983333
+P05  DoubleRing  gaze     0.750000
+                 mouse    0.983333
+     Phone       gaze     0.866667
+                 mouse    0.966667
+     QWERTY      gaze     0.883333
+                 mouse    0.950000
+P06  DoubleRing  gaze     0.900000
+                 mouse    0.983333
+     Phone       gaze     0.933333
+                 mouse    0.983607
+     QWERTY      gaze     0.966667
+                 mouse    0.900000
+dtype: float64

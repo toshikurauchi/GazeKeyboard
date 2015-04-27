@@ -25,8 +25,8 @@ def print_statistics(df, group_by):
     print df[df['found_idx'] == 0].groupby(group_by)['found'].count()/totals
 
     print
-    print 'AMONG TOP 5:'
-    print df[df['found_idx'] < 5].groupby(group_by)['found'].count()/totals
+    print 'AMONG TOP 3:'
+    print df[df['found_idx'] < 3].groupby(group_by)['found'].count()/totals
 
 df = pd.read_csv(filename)
 
