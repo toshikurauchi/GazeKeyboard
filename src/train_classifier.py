@@ -178,7 +178,7 @@ def import_recorded_words(dirpath, mode):
                 df = pd.read_csv(filename)
                 if (mode == 'e'):
                     #get smoothed x,y coordinates for the filename
-                    xy = np.asarray(zip(df.smoothed_x, df.smoothed_y))
+                    xy = np.asarray(zip(df.gaze_x, df.gaze_y))
                 if (mode == 'h'):
                     #get mouse x,y coordinates for the filename
                     xy = np.asarray(zip(df.mouse_x, df.mouse_y))
@@ -363,8 +363,8 @@ if  __name__ == "__main__":
     word_list = word_list[0:49]
     
     #test classifier for various combinations of user, layout and mode
-    user_list = ["Ajjen","Andrew","Wenxin"]
-    layout_list = ["dr", "sr", "p", "q"]
+    user_list = ["P02","P03","P04","P05","P06"]
+    layout_list = ["dr", "p", "q"]
     mode_list = ["e", "h"]
     
     

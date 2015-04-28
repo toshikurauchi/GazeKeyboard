@@ -1,0 +1,39 @@
+Accuracy for P02 for dr for e is: 0.683333,
+Accuracy for P03 for dr for e is: 0.650000,
+Accuracy for P04 for dr for e is: 0.583333,
+Accuracy for P05 for dr for e is: 0.550000,
+Accuracy for P06 for dr for e is: 0.616667,
+
+Accuracy for P02 for dr for h is: 0.750000,
+Accuracy for P03 for dr for h is: 0.733333,
+Accuracy for P04 for dr for h is: 0.766667,
+Accuracy for P05 for dr for h is: 0.766667,
+Accuracy for P06 for dr for h is: 0.700000,
+
+
+Accuracy for P02 for p for e is: 0.728814,
+Accuracy for P03 for p for e is: 0.716667,
+Accuracy for P04 for p for e is: 0.650000,
+Accuracy for P05 for p for e is: 0.483333,
+Accuracy for P06 for p for e is: 0.600000,
+
+Accuracy for P02 for p for h is: 0.733333,
+Accuracy for P03 for p for h is: 0.728814,
+Accuracy for P04 for p for h is: 0.733333,
+Accuracy for P05 for p for h is: 0.733333,
+Accuracy for P06 for p for h is: 0.716667,
+
+
+Accuracy for P02 for q for e is: 0.779661,
+Accuracy for P03 for q for e is: 0.750000,
+Accuracy for P04 for q for e is: 0.733333,
+Accuracy for P05 for q for e is: 0.533333,
+Accuracy for P06 for q for e is: 0.783333,
+
+Accuracy for P02 for q for h is: 0.762712,
+Accuracy for P03 for q for h is: 0.733333,
+Accuracy for P04 for q for h is: 0.800000,
+Accuracy for P05 for q for h is: 0.683333,
+Accuracy for P06 for q for h is: 0.583333,
+
+
