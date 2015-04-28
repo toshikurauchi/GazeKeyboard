@@ -161,7 +161,7 @@ def visualize_path(coordinates, layout):
     plt.imshow(im)
     plt.show()
     
-        
+
 def import_recorded_words(dirpath, mode):
     '''import csv of recorded word inside a directory.
     arg: dirpath - directory path containing the csv files
@@ -285,13 +285,17 @@ def calculate_accuracy(Y_test, Y_pred):
          Y_pred - predictions made by classifier
     ret: accuracy: score for accuracy'''
     
-    sum = 0.0
+    sumTop1 = 0.0
+    sumTop3 = 0.0
     for i in range(len(Y_test)):
-        if (Y_test[i] == Y_pred[i]):
-		sum += 1
+        if (Y_test[i] == Y_pred[i][0]):
+		    sumTop1 += 1
+        if (Y_test[i] in Y_pred[i]):
+            sumTop3 += 1
 
-    accuracy = sum/len(Y_test)
-    return accuracy
+    accuracyTop1 = sumTop1/len(Y_test)
+    accuracyTop3 = sumTop3/len(Y_test)
+    return (accuracyTop1, accuracyTop3)
 
 
 def train_rf(word_list, layout, mode):
@@ -353,14 +357,17 @@ def test_rf(subject, layout, mode, clf):
         feat = compute_features(path, layout, mode)
         X_test.append(feat)
         Y_test.append(word)
-        
-    return (Y_test, clf.predict(X_test))
+    probs = clf.predict_proba(X_test)
+    top3idx = np.argsort(probs)[:,-1:-4:-1]
+    Y_pred = clf.classes_[top3idx]
+    
+    return (Y_test, Y_pred)
 
 if  __name__ == "__main__":
     
     #read list of words
     word_list = read_word_list("../data/100words.txt")
-    word_list = word_list[0:49]
+    word_list = word_list[0:60]
     
     #test classifier for various combinations of user, layout and mode
     user_list = ["P02","P03","P04","P05","P06"]
@@ -373,9 +380,9 @@ if  __name__ == "__main__":
             clf = train_rf(word_list, layout, mode)
             for user in user_list:
                 Y_test, Y_pred = test_rf(user, layout, mode, clf)
-                accuracy = calculate_accuracy(Y_test, Y_pred)  
+                (accuracyTop1, accuracyTop3) = calculate_accuracy(Y_test, Y_pred)
                 
-                print("Accuracy for " + user + " for " + layout + " for " + mode + " is: %f," %(accuracy))
+                print("Accuracy for %s for %s for %s is: %f (top1), %f (top3)," %(user, layout, mode, accuracyTop1, accuracyTop3))
             print
         print
     
